@@ -63,6 +63,7 @@ begin
   for I:= 0 to Cams.Count - 1 do begin
     lbCamList.Items.Add(Cams.Strings[I])
   end;
+  //C1
 end;
 
 procedure TfrmMain.lbCamListClick(Sender: TObject);
