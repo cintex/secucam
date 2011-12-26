@@ -63,7 +63,6 @@ begin
   for I:= 0 to Cams.Count - 1 do begin
     lbCamList.Items.Add(Cams.Strings[I])
   end;
-  //C1
 end;
 
 procedure TfrmMain.lbCamListClick(Sender: TObject);
@@ -111,7 +110,6 @@ end;
 
 procedure TfrmMain.btnStopClick(Sender: TObject);
 begin
-  //TEST DIFF
   imgCamCurrent.Canvas.Pen.Color:= clWhite;
   imgCamCurrent.Canvas.Rectangle(0,0,320,240);
   imgCamCurrent.Canvas.TextOut (10,10,'IDLE [Current Frame]');
