@@ -4,7 +4,14 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ComCtrls, ExtCtrls, StdCtrls, VFrames, Spin, Gauges;
+  Dialogs, ComCtrls, ExtCtrls, StdCtrls, {*-1*} VFrames, Spin, Gauges, Menus;
+
+type //-2
+  TRGB32 = packed record
+    B, G, R, A: Byte;
+  end;
+  TRGB32Array = packed array[0..MaxInt div SizeOf(TRGB32)-1] of TRGB32;
+  PRGB32Array = ^TRGB32Array;
 
 type
   TfrmMain = class(TForm)
@@ -28,16 +35,24 @@ type
     btnGetCurr: TButton;
     btnGetRef: TButton;
     btnComp: TButton;
+    mmMainMenu: TMainMenu;
+    mmiFile: TMenuItem;
+    mmiTst: TMenuItem;
+    N1: TMenuItem;
+    mmiQuit: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure lbCamListClick(Sender: TObject);
     procedure btnCapClick(Sender: TObject);
     procedure tmCapTimer(Sender: TObject);
     procedure btnStopClick(Sender: TObject);
+    procedure mmiQuitClick(Sender: TObject);
+    procedure mmiTstClick(Sender: TObject);
+    procedure btnCompClick(Sender: TObject);
   private
     CurrentCam: TVideoImage;
     CamActive : boolean;
   public
-    { Public declarations }
+    function CompareSquare (pCanvasRef, pCanvasComp: TImage): boolean;
   end;
 
 var
@@ -45,6 +60,25 @@ var
   Cams : TStringList;
 
 implementation
+
+  {*
+    # Function CompareSquare
+    # Input: Canvas von Referenz Bild sowie Vergleichs Bild.
+    # Output: True wenn Änderung, False wenn keine Änderung.
+    ############################################################################
+  *}
+  function TfrmMain.CompareSquare (pCanvasRef, pCanvasComp: TImage): boolean;
+  var X, Y      : integer;
+      PicLineRef: PRGB32Array;
+      PicLineCmp: PRGB32Array;
+      tst: TCanvas;
+  begin
+    Result:= false;
+    pCanvasRef:= TImage.Create (nil);
+    pCanvasComp:= TImage.Create (nil);
+    pCanvasRef.Picture.Bitmap.PixelFormat:= pf24bit;
+    pCanvasComp.Picture.Bitmap.PixelFormat:= pf24bit;
+  end;
 
 {$R *.dfm}
 
@@ -67,6 +101,7 @@ end;
 
 procedure TfrmMain.lbCamListClick(Sender: TObject);
 begin
+  showmessage (inttostr (lbCamList.Items.Count));
   CurrentCam.VideoStop;
   CurrentCam.VideoStart (lbCamList.Items[lbCamList.itemindex]);
   sbStatus.Panels[0].Text:= 'ACTIVE CAM: ' + lbCamList.Items[lbCamList.itemindex];
@@ -116,4 +151,27 @@ begin
   tmCap.Enabled:= false;
 end;
 
+procedure TfrmMain.mmiQuitClick(Sender: TObject);
+begin
+  close;
+end;
+
+procedure TfrmMain.mmiTstClick(Sender: TObject);
+begin
+  imgCamMain.Picture.LoadFromFile ('testscreen2.bmp');
+  imgCamCurrent.Picture.LoadFromFile ('testscreen2.bmp');
+  imgCamReference.Picture.LoadFromFile ('testscreen1.bmp');
+end;
+
+procedure TfrmMain.btnCompClick(Sender: TObject);
+begin
+  //
+end;
+
 end.
+
+{* # Quellen:
+   # *1: http://www.delphipraxis.net/70813-webcam-mit-directshow.html
+   # *2: http://edn.embarcadero.com/article/29173
+   #############################################################################
+*}

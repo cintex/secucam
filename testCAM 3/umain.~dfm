@@ -4,7 +4,7 @@ object frmMain: TfrmMain
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'SecuCAM TEST 3 [FINAL]'
-  ClientHeight = 569
+  ClientHeight = 568
   ClientWidth = 894
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -12,6 +12,7 @@ object frmMain: TfrmMain
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
+  Menu = mmMainMenu
   OldCreateOrder = False
   OnCreate = FormCreate
   PixelsPerInch = 96
@@ -101,7 +102,7 @@ object frmMain: TfrmMain
   end
   object sbStatus: TStatusBar
     Left = 0
-    Top = 550
+    Top = 549
     Width = 894
     Height = 19
     Panels = <
@@ -170,5 +171,23 @@ object frmMain: TfrmMain
     OnTimer = tmCapTimer
     Left = 848
     Top = 16
+  end
+  object mmMainMenu: TMainMenu
+    Left = 808
+    Top = 16
+    object mmiFile: TMenuItem
+      Caption = 'File'
+      object mmiTst: TMenuItem
+        Caption = 'Load Test Screen'
+        OnClick = mmiTstClick
+      end
+      object N1: TMenuItem
+        Caption = '-'
+      end
+      object mmiQuit: TMenuItem
+        Caption = 'Quit'
+        OnClick = mmiQuitClick
+      end
+    end
   end
 end
