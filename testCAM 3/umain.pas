@@ -68,16 +68,27 @@ implementation
     ############################################################################
   *}
   function TfrmMain.CompareSquare (pCanvasRef, pCanvasComp: TImage): boolean;
-  var X, Y      : integer;
-      PicLineRef: PRGB32Array;
-      PicLineCmp: PRGB32Array;
-      tst: TCanvas;
+  var X, Y            : integer;
+      DivR, DivG, DivB: integer;
+      PicLineRef      : PRGB32Array;
+      PicLineCmp      : PRGB32Array;
+      //tst: TCanvas;
   begin
+    DivR:= 0;
+    DivG:= 0;
+    DivB:= 0;
     Result:= false;
     pCanvasRef:= TImage.Create (nil);
     pCanvasComp:= TImage.Create (nil);
     pCanvasRef.Picture.Bitmap.PixelFormat:= pf24bit;
     pCanvasComp.Picture.Bitmap.PixelFormat:= pf24bit;
+    for X:= 0 to pCanvasRef.Height - 1 do begin
+      PicLineRef:= pCanvasRef.Picture.Bitmap.ScanLine[X];
+      PicLineCmp:= pCanvasComp.Picture.Bitmap.ScanLine[X];
+      for Y:= 0 to pCanvasRef.Width - 1 do begin
+        //if PicLineRef[Y].R XOR PicLineCmp[Y].R = 0 then inc
+      end;
+    end;
   end;
 
 {$R *.dfm}

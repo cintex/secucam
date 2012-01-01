@@ -164,6 +164,7 @@ object frmMain: TfrmMain
     Height = 41
     Caption = 'Compare'
     TabOrder = 7
+    OnClick = btnCompClick
   end
   object tmCap: TTimer
     Enabled = False
