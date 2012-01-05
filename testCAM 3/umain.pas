@@ -78,17 +78,20 @@ implementation
     DivG:= 0;
     DivB:= 0;
     Result:= false;
-    pCanvasRef:= TImage.Create (nil);
-    pCanvasComp:= TImage.Create (nil);
+    //pCanvasRef:= TImage.Create (nil);
+    //pCanvasComp:= TImage.Create (nil);
     pCanvasRef.Picture.Bitmap.PixelFormat:= pf24bit;
     pCanvasComp.Picture.Bitmap.PixelFormat:= pf24bit;
     for X:= 0 to pCanvasRef.Height - 1 do begin
       PicLineRef:= pCanvasRef.Picture.Bitmap.ScanLine[X];
       PicLineCmp:= pCanvasComp.Picture.Bitmap.ScanLine[X];
       for Y:= 0 to pCanvasRef.Width - 1 do begin
-        //if PicLineRef[Y].R XOR PicLineCmp[Y].R = 0 then inc
+        if PicLineRef[Y].R XOR PicLineCmp[Y].R <> 0 then inc (DivR);
+        if PicLineRef[Y].G XOR PicLineCmp[Y].G <> 0 then inc (DivG);
+        if PicLineRef[Y].B XOR PicLineCmp[Y].B <> 0 then inc (DivB);
       end;
     end;
+    if (DivR <> 0) OR (DivG <> 0) OR (DivB <> 0) then Result:= true
   end;
 
 {$R *.dfm}
@@ -175,8 +178,61 @@ begin
 end;
 
 procedure TfrmMain.btnCompClick(Sender: TObject);
+var CurrRefSq            : TImage;
+    CurrCompSq           : TImage;
+    CNTSqX, CNTSqY, I, J : integer;
+    X, Y                 : integer;
+    PicLineRef           : PRGB32Array;
+    PicLineCmp           : PRGB32Array;
 begin
-  //
+    CurrRefSq:= TImage.Create(nil);
+    CurrCompSq:= TImage.Create(nil);
+    CurrRefSq.Width:= 32;
+    CurrRefSq.Height:= 24;
+    CurrCompSq.Width:= 32;
+    CurrCompSq.Height:= 24;
+
+  CNTSqX:= 0;
+  CNTSqY:= 0;
+  X:= 0;
+  imgCamDifference.Picture:= imgCamCurrent.Picture;
+  for I:= 1 to 10 do begin
+    //Showmessage ('Loop1');
+    for J:= 1 to 10 do begin
+    //Showmessage ('X->'+IntToStr (CNTSqX)+' Y->'+IntToStr (CNTSqY));
+      CurrRefSq.Canvas.CopyRect (Rect (0, 0, 32,24),
+                                 imgCamCurrent.Canvas,
+                                 Rect (CNTSqX, CNTSqY, CNTSqX+32,CNTSqY+24));
+      CurrCompSq.Canvas.CopyRect (Rect (0, 0, 32,24),
+                                  imgCamReference.Canvas,
+                                  Rect (CNTSqX, CNTSqY, CNTSqX+32,CNTSqY+24));
+
+
+      //imgCamDifference.Picture:= CurrRefSq.Picture;
+      if CompareSquare (CurrRefSq, CurrCompSq) = true then begin
+        //imgCamDifference.Canvas.Rectangle(CNTSqX,CNTSqY,CNTSqX+5,CNTSqY+5);
+        imgCamDifference.Canvas.Pen.Color:= clLime;
+        imgCamDifference.Canvas.MoveTo(CNTSqX,CNTSqY);
+        imgCamDifference.Canvas.LineTo(CNTSqX+32,CNTSqY+24);
+        imgCamDifference.Canvas.MoveTo(CNTSqX+32,CNTSqY);
+        imgCamDifference.Canvas.LineTo(CNTSqX,CNTSqY+24);
+        //X:= X + 1;
+        //showmessage ('Diff')
+      end;
+      //Showmessage ('I''m here');
+      CNTSqX:= CNTSqX + 32;
+      //CurrRefSq.Canvas.Rectangle(0,0,32,24);
+    end;
+    CNTSqX:= 0;
+    CNTSqY:= CNTSqY + 24;
+  end;
+
+  //gauDifference.Progress:= X;
+  {CurrRefSq.Canvas.CopyRect (Rect (0,0,32,24),imgCamCurrent.Canvas,Rect (224,96,256,120));
+  CurrCompSq.Canvas.CopyRect (Rect (0,0,32,24),imgCamReference.Canvas,Rect (224,96,256,120));
+  imgCamDifference.Picture:= CurrRefSq.Picture;
+  if CompareSquare (CurrRefSq, CurrCompSq) = true then Showmessage ('Difference');}
+
 end;
 
 end.
