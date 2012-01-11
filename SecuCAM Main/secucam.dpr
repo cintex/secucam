@@ -4,7 +4,8 @@ uses
   Forms,
   umain in 'umain.pas' {frmMain},
   usplash in 'usplash.pas' {frmSplash},
-  uabout in 'uabout.pas' {frmAbout};
+  uabout in 'uabout.pas' {frmAbout},
+  ucamcomparator in 'ucamcomparator.pas';
 
 {$R *.res}
 

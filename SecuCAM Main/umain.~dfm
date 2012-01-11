@@ -1,6 +1,7 @@
 object frmMain: TfrmMain
   Left = 192
   Top = 107
+  BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'SecuCAM 0.1 ALPHA'
   ClientHeight = 600
@@ -144,6 +145,7 @@ object frmMain: TfrmMain
       Caption = '&Hilfe'
       object mmiAbout: TMenuItem
         Caption = #220'&ber dieses Programm...'
+        OnClick = mmiAboutClick
       end
     end
   end

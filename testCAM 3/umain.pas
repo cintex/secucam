@@ -1,5 +1,20 @@
 unit umain;
 
+{*******************************************************************************
+TODO:
+  -Bild in graustufen umkonvertieren.
+
+  -CompareSquare umändern. Mittelwert von Farben berechnen. Bei zu grosser
+   abweichung -> Differenz. Bsp: MoyRef = 34 MoyCmp = 39 -> MoyRef + 5 bei
+   kleinem Unterschied. MoyRef = 40 MoyCmp = 68 -> Differenz. Vergleiche
+   jeden 2ten (oder Nten) Pixel.
+
+  -Dialog zum einstellen der Auflösung.
+
+  -Funktionen in eine separate Unit setzen.
+
+*******************************************************************************}
+
 interface
 
 uses
@@ -72,11 +87,15 @@ implementation
       DivR, DivG, DivB: integer;
       PicLineRef      : PRGB32Array;
       PicLineCmp      : PRGB32Array;
-      //tst: TCanvas;
+
+      ColRef, ColComp : integer;
   begin
     DivR:= 0;
     DivG:= 0;
     DivB:= 0;
+
+    ColRef:= 0;
+    ColComp:= 0;
     Result:= false;
     //pCanvasRef:= TImage.Create (nil);
     //pCanvasComp:= TImage.Create (nil);
@@ -86,9 +105,12 @@ implementation
       PicLineRef:= pCanvasRef.Picture.Bitmap.ScanLine[X];
       PicLineCmp:= pCanvasComp.Picture.Bitmap.ScanLine[X];
       for Y:= 0 to pCanvasRef.Width - 1 do begin
-        if PicLineRef[Y].R XOR PicLineCmp[Y].R <> 0 then inc (DivR);
-        if PicLineRef[Y].G XOR PicLineCmp[Y].G <> 0 then inc (DivG);
-        if PicLineRef[Y].B XOR PicLineCmp[Y].B <> 0 then inc (DivB);
+        //if PicLineRef[Y].R XOR PicLineCmp[Y].R <> 0 then inc (DivR);
+        //if PicLineRef[Y].G XOR PicLineCmp[Y].G <> 0 then inc (DivG);
+        //if PicLineRef[Y].B XOR PicLineCmp[Y].B <> 0 then inc (DivB);
+
+        ColRef:= ColR + PicLineRef[Y].R;
+
       end;
     end;
     if (DivR <> 0) OR (DivG <> 0) OR (DivB <> 0) then Result:= true

@@ -37,6 +37,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure tmGeneralTimer(Sender: TObject);
     procedure mmiExitClick(Sender: TObject);
+    procedure mmiAboutClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -49,7 +50,7 @@ var
 implementation
 
 uses
-  usplash;
+  usplash, uabout;
 
 {$R *.dfm}
 
@@ -90,6 +91,11 @@ end;
 procedure TfrmMain.mmiExitClick(Sender: TObject);
 begin
   close;
+end;
+
+procedure TfrmMain.mmiAboutClick(Sender: TObject);
+begin
+  frmAbout.ShowModal;
 end;
 
 end.
