@@ -2,6 +2,8 @@ unit umain;
 
 {*******************************************************************************
 TODO:
+  -Bild in graustufen umkonvertieren.
+
   -CompareSquare umändern. Mittelwert von Farben berechnen. Bei zu grosser
    abweichung -> Differenz. Bsp: MoyRef = 34 MoyCmp = 39 -> MoyRef + 5 bei
    kleinem Unterschied. MoyRef = 40 MoyCmp = 68 -> Differenz. Vergleiche
@@ -64,6 +66,7 @@ type
   private
     CurrentCam: TVideoImage;
     CamActive : boolean;
+    ImgSp     : TImage;
   public
     function CompareSquare (pCanvasRef, pCanvasComp: TImage): boolean;
   end;
@@ -81,16 +84,17 @@ implementation
     ############################################################################
   *}
   function TfrmMain.CompareSquare (pCanvasRef, pCanvasComp: TImage): boolean;
-  var X, Y            : integer;
-      DivR, DivG, DivB: integer;
-      PicLineRef      : PRGB32Array;
-      PicLineCmp      : PRGB32Array;
+  var X, Y               : integer;
+      DivRr, DivGr, DivBr: integer;
+      DivRc, DivGc, DivBc: integer;
+      PicLineRef         : PRGB32Array;
+      PicLineCmp         : PRGB32Array;
 
       ColRef, ColComp : integer;
   begin
-    DivR:= 0;
-    DivG:= 0;
-    DivB:= 0;
+    DivRr:= 0; DivRc:= 0;
+    DivGr:= 0; DivGc:= 0;
+    DivBr:= 0; DivBc:= 0;
 
     ColRef:= 0;
     ColComp:= 0;
@@ -107,11 +111,37 @@ implementation
         //if PicLineRef[Y].G XOR PicLineCmp[Y].G <> 0 then inc (DivG);
         //if PicLineRef[Y].B XOR PicLineCmp[Y].B <> 0 then inc (DivB);
 
-        ColRef:= ColR + PicLineRef[Y].R;
-
+        DivRr:= DivRr + PicLineRef[Y].R;
+        DivRc:= DivRc + PicLineCmp[Y].R;
+        DivGr:= DivGr + PicLineRef[Y].G;
+        DivGc:= DivGc + PicLineCmp[Y].G;
+        DivBr:= DivBr + PicLineRef[Y].B;
+        DivBc:= DivBc + PicLineCmp[Y].B;
       end;
     end;
-    if (DivR <> 0) OR (DivG <> 0) OR (DivB <> 0) then Result:= true
+
+    DivRr:= DivRr div 768;
+    DivRc:= DivRc div 786;
+    DivGr:= DivGr div 768;
+    DivGc:= DivGc div 786;
+    DivBr:= DivBr div 768;
+    DivBc:= DivBc div 786;
+
+    {*Showmessage ('**RED** || '+
+                 'Ref=>'+IntToStr (DivRr)+' '+
+                 'Cmp=>'+IntToStr (DivRc)+ ' '+
+                 'Diff=>'+IntToStr (abs(DivRr - DivRc)));
+    Showmessage ('**GREEN** || '+
+                 'Ref=>'+IntToStr (DivGr)+' '+
+                 'Cmp=>'+IntToStr (DivGc)+ ' '+
+                 'Diff=>'+IntToStr (abs(DivGr - DivGc)));
+    Showmessage ('**BLUE** || '+
+                 'Ref=>'+IntToStr (DivBr)+' '+
+                 'Cmp=>'+IntToStr (DivBc)+ ' '+
+                 'Diff=>'+IntToStr (abs(DivBr - DivBc))); *}
+    if (abs (DivRr - DivRc) > 15) OR
+       (abs (DivGr - DivGc) > 15) OR
+       (abs (DivBr - DivBc) > 15) then Result:= true;
   end;
 
 {$R *.dfm}
@@ -128,6 +158,9 @@ begin
   CurrentCam:= TVideoImage.Create;
   CurrentCam.SetDisplayCanvas (imgCamMain.Canvas);
   CurrentCam.GetListOfDevices (Cams);
+  ImgSp:= TImage.Create(nil);
+  ImgSp.Width:= 320;
+  ImgSp.Height:= 240;
   for I:= 0 to Cams.Count - 1 do begin
     lbCamList.Items.Add(Cams.Strings[I])
   end;
@@ -150,9 +183,17 @@ procedure TfrmMain.tmCapTimer(Sender: TObject);
 var I: integer;
     Interval: integer;
 begin
-  if shCap.Brush.Color = clWhite then shCap.Brush.Color:= clLime
-                                 else shCap.Brush.Color:= clWhite;
-  imgCamCurrent.Picture:= imgCamMain.Picture;
+  if shCap.Brush.Color = clWhite then begin
+    imgSp.Picture:= imgCamMain.Picture;
+    imgCamCurrent.Picture:= imgCamMain.Picture;
+    shCap.Brush.Color:= clLime
+  end
+  else begin
+    imgCamReference.Picture:= imgCamMain.Picture;
+    btnCompClick (sender);
+    shCap.Brush.Color:= clWhite;
+  end;
+  //imgCamCurrent.Picture:= imgCamMain.Picture;
   imgCamCurrent.Canvas.Pen.Color:= clLime;
   imgCamCurrent.Canvas.Pen.Width:= 1;
   Interval:= tmCap.Interval;
@@ -174,7 +215,7 @@ begin
   end;
   imgCamCurrent.Canvas.TextOut (5,5,'GetFrame FPS: ' + FloatToStr(Round (1000 / Interval)));
   imgCamMain.Canvas.TextOut (5,5,'Actual FPS: ' + FloatToStr (Round (CurrentCam.FramesPerSecond)));
-  if Round (CurrentCam.FramesPerSecond) <> 0 then tmCap.Interval:= Round (1000 / CurrentCam.FramesPerSecond);
+  //if Round (CurrentCam.FramesPerSecond) <> 0 then tmCap.Interval:= Round (1000 / CurrentCam.FramesPerSecond);
 end;
 
 procedure TfrmMain.btnStopClick(Sender: TObject);
@@ -205,6 +246,7 @@ var CurrRefSq            : TImage;
     PicLineRef           : PRGB32Array;
     PicLineCmp           : PRGB32Array;
 begin
+  
     CurrRefSq:= TImage.Create(nil);
     CurrCompSq:= TImage.Create(nil);
     CurrRefSq.Width:= 32;
@@ -215,13 +257,27 @@ begin
   CNTSqX:= 0;
   CNTSqY:= 0;
   X:= 0;
-  imgCamDifference.Picture:= imgCamCurrent.Picture;
+  imgCamDifference.Picture:= imgSp.Picture;
+
+  //*** ONLY FOR DEBUGGING ***
+
+  {*CurrRefSq.Canvas.CopyRect (Rect (0, 0, 32, 24),
+                             imgCamCurrent.Canvas,
+                             Rect (64, 48, 96, 72));
+  CurrCompSq.Canvas.CopyRect (Rect (0, 0, 32, 24),
+                              imgCamReference.Canvas,
+                              Rect (64, 48, 96, 72));
+
+  if CompareSquare (CurrRefSq, CurrCompSq) = true then Showmessage ('DIFF');*}
+
+  //**************************
+
   for I:= 1 to 10 do begin
     //Showmessage ('Loop1');
     for J:= 1 to 10 do begin
     //Showmessage ('X->'+IntToStr (CNTSqX)+' Y->'+IntToStr (CNTSqY));
       CurrRefSq.Canvas.CopyRect (Rect (0, 0, 32,24),
-                                 imgCamCurrent.Canvas,
+                                 imgSp.Canvas,
                                  Rect (CNTSqX, CNTSqY, CNTSqX+32,CNTSqY+24));
       CurrCompSq.Canvas.CopyRect (Rect (0, 0, 32,24),
                                   imgCamReference.Canvas,
@@ -236,6 +292,8 @@ begin
         imgCamDifference.Canvas.LineTo(CNTSqX+32,CNTSqY+24);
         imgCamDifference.Canvas.MoveTo(CNTSqX+32,CNTSqY);
         imgCamDifference.Canvas.LineTo(CNTSqX,CNTSqY+24);
+        X:= X + 1;
+
         //X:= X + 1;
         //showmessage ('Diff')
       end;
@@ -243,6 +301,7 @@ begin
       CNTSqX:= CNTSqX + 32;
       //CurrRefSq.Canvas.Rectangle(0,0,32,24);
     end;
+    gauDifference.Progress:= X;
     CNTSqX:= 0;
     CNTSqY:= CNTSqY + 24;
   end;

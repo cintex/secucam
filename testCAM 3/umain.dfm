@@ -168,7 +168,6 @@ object frmMain: TfrmMain
   end
   object tmCap: TTimer
     Enabled = False
-    Interval = 33
     OnTimer = tmCapTimer
     Left = 848
     Top = 16
