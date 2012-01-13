@@ -47,6 +47,7 @@ object frmMain: TfrmMain
     Width = 145
     Height = 22
     ForeColor = clLime
+    MaxValue = 10000
     Progress = 0
   end
   object Label1: TLabel
@@ -168,7 +169,7 @@ object frmMain: TfrmMain
   end
   object tmCap: TTimer
     Enabled = False
-    Interval = 33
+    Interval = 500
     OnTimer = tmCapTimer
     Left = 848
     Top = 16

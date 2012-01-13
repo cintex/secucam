@@ -63,6 +63,7 @@ type
     procedure mmiQuitClick(Sender: TObject);
     procedure mmiTstClick(Sender: TObject);
     procedure btnCompClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     CurrentCam: TVideoImage;
     CamActive : boolean;
@@ -76,6 +77,9 @@ var
   Cams : TStringList;
 
 implementation
+
+uses
+  ustatus;
 
   {*
     # Function CompareSquare
@@ -250,10 +254,10 @@ var CurrRefSq            : TImage;
 begin
     CurrRefSq:= TImage.Create(nil);
     CurrCompSq:= TImage.Create(nil);
-    CurrRefSq.Width:= 32;
-    CurrRefSq.Height:= 24;
-    CurrCompSq.Width:= 32;
-    CurrCompSq.Height:= 24;
+    CurrRefSq.Width:= 16;
+    CurrRefSq.Height:= 12;
+    CurrCompSq.Width:= 16;
+    CurrCompSq.Height:= 12;
 
   CNTSqX:= 0;
   CNTSqY:= 0;
@@ -273,16 +277,16 @@ begin
 
   //**************************
 
-  for I:= 1 to 10 do begin
+  for I:= 1 to 100 do begin
     //Showmessage ('Loop1');
-    for J:= 1 to 10 do begin
+    for J:= 1 to 100 do begin
     //Showmessage ('X->'+IntToStr (CNTSqX)+' Y->'+IntToStr (CNTSqY));
-      CurrRefSq.Canvas.CopyRect (Rect (0, 0, 32,24),
+      CurrRefSq.Canvas.CopyRect (Rect (0, 0, 16,12),
                                  imgSp.Canvas,
-                                 Rect (CNTSqX, CNTSqY, CNTSqX+32,CNTSqY+24));
-      CurrCompSq.Canvas.CopyRect (Rect (0, 0, 32,24),
+                                 Rect (CNTSqX, CNTSqY, CNTSqX+16,CNTSqY+12));
+      CurrCompSq.Canvas.CopyRect (Rect (0, 0, 16,12),
                                   imgCamReference.Canvas,
-                                  Rect (CNTSqX, CNTSqY, CNTSqX+32,CNTSqY+24));
+                                  Rect (CNTSqX, CNTSqY, CNTSqX+16,CNTSqY+12));
 
 
       //imgCamDifference.Picture:= CurrRefSq.Picture;
@@ -290,21 +294,21 @@ begin
         //imgCamDifference.Canvas.Rectangle(CNTSqX,CNTSqY,CNTSqX+5,CNTSqY+5);
         imgCamDifference.Canvas.Pen.Color:= clLime;
         imgCamDifference.Canvas.MoveTo(CNTSqX,CNTSqY);
-        imgCamDifference.Canvas.LineTo(CNTSqX+32,CNTSqY+24);
-        imgCamDifference.Canvas.MoveTo(CNTSqX+32,CNTSqY);
-        imgCamDifference.Canvas.LineTo(CNTSqX,CNTSqY+24);
+        imgCamDifference.Canvas.LineTo(CNTSqX+16,CNTSqY+12);
+        imgCamDifference.Canvas.MoveTo(CNTSqX+16,CNTSqY);
+        imgCamDifference.Canvas.LineTo(CNTSqX,CNTSqY+12);
         X:= X + 1;
 
         //X:= X + 1;
         //showmessage ('Diff')
       end;
       //Showmessage ('I''m here');
-      CNTSqX:= CNTSqX + 32;
+      CNTSqX:= CNTSqX + 16;
       //CurrRefSq.Canvas.Rectangle(0,0,32,24);
     end;
     gauDifference.Progress:= X;
     CNTSqX:= 0;
-    CNTSqY:= CNTSqY + 24;
+    CNTSqY:= CNTSqY + 12;
   end;
 
   //gauDifference.Progress:= X;
@@ -313,6 +317,12 @@ begin
   imgCamDifference.Picture:= CurrRefSq.Picture;
   if CompareSquare (CurrRefSq, CurrCompSq) = true then Showmessage ('Difference');}
 
+end;
+
+procedure TfrmMain.FormShow(Sender: TObject);
+begin
+  frmStatus.Show;
+  frmStatus.memStatus.Lines.Add('Program initialized.')
 end;
 
 end.

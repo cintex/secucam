@@ -15,6 +15,7 @@ object frmMain: TfrmMain
   Menu = mmMainMenu
   OldCreateOrder = False
   OnCreate = FormCreate
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object imgCamMain: TImage
@@ -47,6 +48,7 @@ object frmMain: TfrmMain
     Width = 145
     Height = 22
     ForeColor = clLime
+    MaxValue = 10000
     Progress = 0
   end
   object Label1: TLabel
@@ -168,6 +170,7 @@ object frmMain: TfrmMain
   end
   object tmCap: TTimer
     Enabled = False
+    Interval = 500
     OnTimer = tmCapTimer
     Left = 848
     Top = 16
