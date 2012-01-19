@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 198
-  Top = 110
+  Left = 231
+  Top = 124
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'SecuCAM TEST 3 [FINAL]'
@@ -48,7 +48,7 @@ object frmMain: TfrmMain
     Width = 145
     Height = 22
     ForeColor = clLime
-    MaxValue = 10000
+    MaxValue = 400
     Progress = 0
   end
   object Label1: TLabel
@@ -170,7 +170,7 @@ object frmMain: TfrmMain
   end
   object tmCap: TTimer
     Enabled = False
-    Interval = 500
+    Interval = 100
     OnTimer = tmCapTimer
     Left = 848
     Top = 16

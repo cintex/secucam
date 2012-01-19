@@ -187,7 +187,7 @@ procedure TfrmMain.tmCapTimer(Sender: TObject);
 var I: integer;
     Interval: integer;
 begin
-  if shCap.Brush.Color = clWhite then begin
+  if (shCap.Brush.Color = clWhite) AND (gauDifference.PercentDone < 3) then begin
     imgSp.Picture:= imgCamMain.Picture;
     shComp.Brush.Color:= clWhite;
     imgCamCurrent.Picture:= imgCamMain.Picture;
@@ -262,6 +262,7 @@ begin
   CNTSqX:= 0;
   CNTSqY:= 0;
   X:= 0;
+  //imgSp.Picture:= imgCamCurrent.Picture;
   imgCamDifference.Picture:= imgSp.Picture;
 
   //*** ONLY FOR DEBUGGING ***
@@ -277,14 +278,14 @@ begin
 
   //**************************
 
-  for I:= 1 to 100 do begin
+  for I:= 1 to 20 do begin
     //Showmessage ('Loop1');
-    for J:= 1 to 100 do begin
+    for J:= 1 to 20 do begin
     //Showmessage ('X->'+IntToStr (CNTSqX)+' Y->'+IntToStr (CNTSqY));
-      CurrRefSq.Canvas.CopyRect (Rect (0, 0, 16,12),
+      CurrRefSq.Canvas.CopyRect (Rect (0, 0, 16, 12),
                                  imgSp.Canvas,
                                  Rect (CNTSqX, CNTSqY, CNTSqX+16,CNTSqY+12));
-      CurrCompSq.Canvas.CopyRect (Rect (0, 0, 16,12),
+      CurrCompSq.Canvas.CopyRect (Rect (0, 0, 16, 12),
                                   imgCamReference.Canvas,
                                   Rect (CNTSqX, CNTSqY, CNTSqX+16,CNTSqY+12));
 
@@ -298,19 +299,15 @@ begin
         imgCamDifference.Canvas.MoveTo(CNTSqX+16,CNTSqY);
         imgCamDifference.Canvas.LineTo(CNTSqX,CNTSqY+12);
         X:= X + 1;
-
-        //X:= X + 1;
-        //showmessage ('Diff')
       end;
-      //Showmessage ('I''m here');
       CNTSqX:= CNTSqX + 16;
       //CurrRefSq.Canvas.Rectangle(0,0,32,24);
     end;
-    gauDifference.Progress:= X;
     CNTSqX:= 0;
     CNTSqY:= CNTSqY + 12;
   end;
-
+  //Showmessage (IntToStr (X));
+  gauDifference.Progress:= X;
   //gauDifference.Progress:= X;
   {CurrRefSq.Canvas.CopyRect (Rect (0,0,32,24),imgCamCurrent.Canvas,Rect (224,96,256,120));
   CurrCompSq.Canvas.CopyRect (Rect (0,0,32,24),imgCamReference.Canvas,Rect (224,96,256,120));
