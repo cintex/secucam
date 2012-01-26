@@ -315,13 +315,13 @@ begin
   if CompareSquare (CurrRefSq, CurrCompSq) = true then Showmessage ('Difference');}
 
 end;
-
+//===================== FORM SHOW ==============================================
 procedure TfrmMain.FormShow(Sender: TObject);
 begin
   frmStatus.Show;
   frmStatus.memStatus.Lines.Add('Program initialized.')
 end;
-
+//==============================================================================
 end.
 
 {* # Quellen:
