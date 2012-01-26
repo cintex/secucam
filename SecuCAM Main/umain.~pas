@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, ToolWin, Menus, ExtCtrls;
+  Dialogs, StdCtrls, ComCtrls, ToolWin, Menus, ExtCtrls, VFrames, ImgList;
 
 type
   TfrmMain = class(TForm)
@@ -14,7 +14,7 @@ type
     mmiHelp: TMenuItem;
     mmiAbout: TMenuItem;
     mmiExit: TMenuItem;
-    ToolBar1: TToolBar;
+    tbMain: TToolBar;
     ToolButton1: TToolButton;
     ToolButton2: TToolButton;
     ToolButton3: TToolButton;
@@ -30,6 +30,11 @@ type
     pbCamW3: TPaintBox;
     pbCamW4: TPaintBox;
     tmGeneral: TTimer;
+    imgIcoLst: TImageList;
+    ToolButton6: TToolButton;
+    ToolButton7: TToolButton;
+    ToolButton8: TToolButton;
+    ToolButton9: TToolButton;
     procedure pbCamW1Paint(Sender: TObject);
     procedure pbCamW2Paint(Sender: TObject);
     procedure pbCamW3Paint(Sender: TObject);

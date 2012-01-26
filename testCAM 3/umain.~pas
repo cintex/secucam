@@ -187,7 +187,7 @@ procedure TfrmMain.tmCapTimer(Sender: TObject);
 var I: integer;
     Interval: integer;
 begin
-  if shCap.Brush.Color = clWhite then begin
+  if (shCap.Brush.Color = clWhite) AND (gauDifference.PercentDone < 3) then begin
     imgSp.Picture:= imgCamMain.Picture;
     shComp.Brush.Color:= clWhite;
     imgCamCurrent.Picture:= imgCamMain.Picture;
@@ -262,6 +262,7 @@ begin
   CNTSqX:= 0;
   CNTSqY:= 0;
   X:= 0;
+  //imgSp.Picture:= imgCamCurrent.Picture;
   imgCamDifference.Picture:= imgSp.Picture;
 
   //*** ONLY FOR DEBUGGING ***
@@ -305,7 +306,7 @@ begin
     CNTSqX:= 0;
     CNTSqY:= CNTSqY + 12;
   end;
-  Showmessage (IntToStr (X));
+  //Showmessage (IntToStr (X));
   gauDifference.Progress:= X;
   //gauDifference.Progress:= X;
   {CurrRefSq.Canvas.CopyRect (Rect (0,0,32,24),imgCamCurrent.Canvas,Rect (224,96,256,120));
