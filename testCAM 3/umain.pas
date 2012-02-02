@@ -230,6 +230,7 @@ begin
   imgCamCurrent.Canvas.Rectangle(0,0,320,240);
   imgCamCurrent.Canvas.TextOut (10,10,'IDLE [Current Frame]');
   tmCap.Enabled:= false;
+  gauDifference.Progress:= 0;
 end;
 
 procedure TfrmMain.mmiQuitClick(Sender: TObject);
