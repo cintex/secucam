@@ -26,8 +26,6 @@ type
     pgMain: TPageControl;
     tbsMain: TTabSheet;
     tbsExtended: TTabSheet;
-    pbCamW3: TPaintBox;
-    pbCamW4: TPaintBox;
     tmGeneral: TTimer;
     imgIcoLst: TImageList;
     ToolButton6: TToolButton;
@@ -55,10 +53,9 @@ type
     ProgressBar2: TProgressBar;
     ProgressBar3: TProgressBar;
     ProgressBar4: TProgressBar;
-    Image1: TImage;
-    procedure pbCamW2Paint(Sender: TObject);
-    procedure pbCamW3Paint(Sender: TObject);
-    procedure pbCamW4Paint(Sender: TObject);
+    imgCamW2: TImage;
+    imgCamW3: TImage;
+    imgCamW4: TImage;
     procedure FormShow(Sender: TObject);
     procedure tmGeneralTimer(Sender: TObject);
     procedure mmiExitClick(Sender: TObject);
@@ -80,24 +77,6 @@ uses
   usplash, uabout;
 
 {$R *.dfm}
-
-procedure TfrmMain.pbCamW2Paint(Sender: TObject);
-begin
-  pbCamW2.Canvas.Rectangle (1,1,320,240);
-  pbCamW2.Canvas.TextOut(10,10,'Keine Kamera definiert!');
-end;
-
-procedure TfrmMain.pbCamW3Paint(Sender: TObject);
-begin
-  pbCamW3.Canvas.Rectangle (1,1,320,240);
-  pbCamW3.Canvas.TextOut(10,10,'Keine Kamera definiert!');
-end;
-
-procedure TfrmMain.pbCamW4Paint(Sender: TObject);
-begin
-  pbCamW4.Canvas.Rectangle (1,1,320,240);
-  pbCamW4.Canvas.TextOut(10,10,'Keine Kamera definiert!');
-end;
 
 procedure TfrmMain.FormShow(Sender: TObject);
 begin
@@ -122,20 +101,23 @@ end;
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   Cam1:= TCamComparator.Create;
-  imgCamW1.Canvas.Rectangle (0,0,320,240);
   imgCamW1.Canvas.TextOut(10,10,'Keine Kamera definiert!');
+  imgCamW2.Canvas.TextOut(10,10,'Keine Kamera definiert!');
+  imgCamW3.Canvas.TextOut(10,10,'Keine Kamera definiert!');
+  imgCamW4.Canvas.TextOut(10,10,'Keine Kamera definiert!');
 end;
 
 procedure TfrmMain.tbtnRunTestClick(Sender: TObject);
 begin
   Cam1.Sensitivity:= 3;
   Cam1.GridSize:= 16;
-  Cam1.DoHighlight:= false;
-  Cam1.GridColor:= clLime;
+  Cam1.DoHighlight:= true;
+  Cam1.GridColor:= clRed;
   Cam1.HighlightColor:= clRed;
   Cam1.GetPicture (imgCamW1);
   CamW1prog.Position:= 55;
   shCamW1det.Brush.Color:= clRed;
+  sbStatus.Panels[1].Text:= 'Detektion an Kamera 1';
 end;
 
 end.

@@ -101,13 +101,9 @@ end;
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   Cam1:= TCamComparator.Create;
-  imgCamW1.Canvas.Rectangle (0,0,320,240);
   imgCamW1.Canvas.TextOut(10,10,'Keine Kamera definiert!');
-  imgCamW2.Canvas.Rectangle (0,0,320,240);
   imgCamW2.Canvas.TextOut(10,10,'Keine Kamera definiert!');
-  imgCamW3.Canvas.Rectangle (0,0,320,240);
   imgCamW3.Canvas.TextOut(10,10,'Keine Kamera definiert!');
-  imgCamW4.Canvas.Rectangle (0,0,320,240);
   imgCamW4.Canvas.TextOut(10,10,'Keine Kamera definiert!');
 end;
 
@@ -115,12 +111,13 @@ procedure TfrmMain.tbtnRunTestClick(Sender: TObject);
 begin
   Cam1.Sensitivity:= 3;
   Cam1.GridSize:= 16;
-  Cam1.DoHighlight:= false;
-  Cam1.GridColor:= clLime;
+  Cam1.DoHighlight:= true;
+  Cam1.GridColor:= clRed;
   Cam1.HighlightColor:= clRed;
   Cam1.GetPicture (imgCamW1);
   CamW1prog.Position:= 55;
   shCamW1det.Brush.Color:= clRed;
+  sbStatus.Panels[1].Text:= 'Detektion an Kamera 1';
 end;
 
 end.
