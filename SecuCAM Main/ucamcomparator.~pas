@@ -11,14 +11,14 @@ unit ucamcomparator;
 interface
 
 uses
-  SysUtils, ExtCtrls, Graphics;
+  SysUtils, ExtCtrls, Graphics, Classes, Math;
 
 type
-  TRGBa = packed record
-    B, G, R, A: Byte;
+  TRGB = packed record
+    B, G, R: Byte;
   end;
-  TRGBaPXArr = packed array[0..MaxInt div SizeOf(TRGBa)-1] of TRGBa;
-  RGBaPXArr  = ^TRGBaPXArr;
+  TRGBPXArr = packed array[0..MaxInt div SizeOf(TRGB)-1] of TRGB;
+  RGBPXArr  = ^TRGBPXArr;
 
 type
   TCamComparator = class
@@ -28,17 +28,34 @@ type
     ImgRefPart  : TImage;
     ImgCmpPart  : TImage;
 
-    FSensitivity: integer;
-    procedure SetSensitivity(const pSensitivity: integer);
+    FSensitivity    : integer;
+    FDoHighlight    : boolean;
+    FGridSize       : integer;
+    FGridColor      : TColor;
+    FHighlightColor : TColor;
+    FBusy           : boolean;
+
+    procedure SetSensitivity (const pSensitivity: integer);
+    procedure SetDoHighlight (const pDoHighlight: boolean);
+    procedure SetGridSize (const pGridSize: integer);
+    procedure SetGridColor (const pGridColor: TColor);
+    procedure SetHighlightColor (const pHighlightColor: TColor);
+
+    function CompareSquare (pSqRef, pSqCmp: TImage): boolean;
   public
     constructor Create;
-    destructor  Destroy;
+    destructor  Destroy; override;
 
     property Sensitivity: integer read FSensitivity write SetSensitivity;
+    property GridSize: integer read FGridSize write SetGridSize;
+    property DoHighlight: boolean read FDoHighlight write SetDoHighlight;
+    property GridColor: TColor read FGridColor write SetGridColor;
+    property HighlightColor: TColor read FHighlightColor write SetHighlightColor;
+    property Busy: boolean read FBusy;
 
     procedure GetPicture (var pCamImage: TBitmap);
-    procedure CheckDifference ();
-    function  CompareSquare (pSqRef, pSqCmp: TImage): boolean;
+    procedure CheckDifference (pImgCmp, pImgRef: TImage;
+                               pDifference: integer);
   end;
 
 implementation
@@ -54,10 +71,20 @@ implementation
     ImgCmpFull.Picture.Bitmap.PixelFormat:= pf24bit;
     ImgCmpFull.Picture.Bitmap.Width:= 320;
     ImgCmpFull.Picture.Bitmap.Height:= 240;
-    ImgRefFull.Canvas.TextOut(10,10,'KEIN BILD!');
+    ImgRefFull.Canvas.TextOut(10,300,'Sleeping zzzZZZzzzZZZ');
 
     ImgRefPart:= TImage.Create (nil);
+    ImgRefPart.Picture.Bitmap.PixelFormat:= pf24bit;
+
     ImgCmpPart:= TImage.Create (nil);
+    ImgCmpPart.Picture.Bitmap.PixelFormat:= pf24bit;
+
+    FSensitivity:= 3;
+    FGridSize:= 16;
+    FDoHighlight:= false;
+    FGridColor:= clLime;
+    FHighlightColor:= clLime;
+    FBusy:= false;
   end;
 
   destructor TCamComparator.Destroy;
@@ -66,23 +93,75 @@ implementation
     ImgCmpFull.Destroy;
     ImgRefPart.Destroy;
     ImgCmpPart.Destroy;
+    inherited;
   end;
 
   procedure TCamComparator.GetPicture(var pCamImage: TBitmap);
+  var I: integer;
   begin
-    pCamImage:= ImgRefFull.Picture.Bitmap;
-    pCamImage.Canvas.TextOut(10,10,FormatDateTime('yyyy-mm-dd hh:nn:ss', now));
+    if not FBusy = true then begin
+      pCamImage:= ImgCmpFull.Picture.Bitmap;
+      if FDoHighlight = true then
+        for I:= 1 to FGridSize do begin
+          pCamImage.Canvas.Polyline ([Point (round (I * (320 / FGridSize + 1)), 0),
+                                      Point (round (I * (320 / FGridSize + 1)), 240)]);
+          pCamImage.Canvas.Polyline ([Point (0, round (I * (240 / (round (FGridSize / 4) * 3) + 1))),
+                                      Point (320, round (I * (240 / (round (FGridSize / 4) * 3) + 1)))]);
+        end;
+      pCamImage.Canvas.TextOut(10,10,FormatDateTime('yyyy-mm-dd hh:nn:ss', now));
+    end
   end;
 
-  procedure TCamComparator.CheckDifference ();
+  procedure TCamComparator.CheckDifference (pImgCmp, pImgRef: TImage;
+                                            pDifference: integer);
+  var I, J          : integer;
+      CNTSqX, CNTSqY: integer;
+      Difference    : integer;
+      RatioX, RatioY: integer;
   begin
+    CNTSqX:= 0;
+    CNTSqY:= 0;
+    Difference:= 0;
+    RatioX:= FGridSize;
+    RatioY:= round (FGridSize / 4) * 3;
+    ImgRefPart.Picture.Bitmap.Width:= RatioX;
+    ImgRefPart.Picture.Bitmap.Height:= RatioY;
+    ImgCmpPart.Picture.Bitmap.Width:= RatioX;
+    ImgCmpPart.Picture.Bitmap.Height:= RatioY;
+    ImgCmpFull.Picture.Bitmap:= pImgCmp.Picture.Bitmap;
+    if FDoHighlight = true then ImgCmpFull.Canvas.Pen.Color:= FHighlightColor;
+    FBusy:= true;
+    for I:= 1 to round (320 / RatioX) do begin
+      for J:= 1 to round (240 / RatioY) do begin
+        ImgCmpPart.Canvas.CopyRect (Rect (0,0,RatioX, RatioX),
+                                    pImgCmp.Canvas,
+                                    Rect (CNTSqX, CNTSqY, CNTSqX + RatioX, CNTSqY + RatioY));
+        ImgRefPart.Canvas.CopyRect (Rect (0,0,RatioX, RatioY),
+                                    pImgRef.Canvas,
+                                    Rect (CNTSqX, CNTSqY, CNTSqX + RatioX, CNTSqY + RatioY));
+        if CompareSquare (ImgRefPart, ImgCmpPart) = true then begin
+          inc (Difference);
+          if FDoHighlight = true then begin
+            ImgCmpFull.Canvas.Polyline ([Point (CNTSqX, CNTSqY),
+                                         Point (CNTSqX + RatioX, CNTSqY + RatioY)]);
+            ImgCmpFull.Canvas.Polyline ([Point (CNTSqX + RatioX, CNTSqY),
+                                         Point (CNTSqX, CNTSqY + RatioY)]);
+          end;
+        end;
+        CNTSqX:= CNTSqX + RatioX;
+      end;
+      CNTSqX:= 0;
+      CNTSqY:= CNTSqY + RatioY;
+    end;
+    pDifference:= round (Difference / power (round (320 / RatioX), 2)) * 100;
+    FBusy:= false;
   end;
 
   function TCamComparator.CompareSquare (pSqRef, pSqCmp: TImage): boolean;
   var X, Y                    : integer;
       DiffRr, DiffGr, DiffBr  : integer;
       DiffRc, DiffGc, DiffBc  : integer;
-      ScanLineRef, ScanLineCmp: RGBaPXArr;
+      ScanLineRef, ScanLineCmp: RGBPXArr;
   begin
     DiffRr:= 0;
     DiffGr:= 0;
@@ -99,9 +178,9 @@ implementation
         DiffRr:= DiffRr + ScanLineRef [Y].R;
         DiffGr:= DiffGr + ScanLineRef [Y].G;
         DiffBr:= DiffBr + ScanLineRef [Y].B;
-        DiffRc:= DiffRc + ScanLineRef [Y].R;
-        DiffGc:= DiffGc + ScanLineRef [Y].G;
-        DiffBc:= DiffBc + ScanLineRef [Y].B;
+        DiffRc:= DiffRc + ScanLineCmp [Y].R;
+        DiffGc:= DiffGc + ScanLineCmp [Y].G;
+        DiffBc:= DiffBc + ScanLineCmp [Y].B;
       end;
     end;
 
@@ -120,6 +199,26 @@ implementation
   procedure TCamComparator.SetSensitivity(const pSensitivity: integer);
   begin
     FSensitivity := pSensitivity;
+  end;
+
+  procedure TCamComparator.SetDoHighlight(const pDoHighlight: boolean);
+  begin
+    FDoHighlight:= pDoHighlight;
+  end;
+
+  procedure TCamComparator.SetGridSize(const pGridSize: integer);
+  begin
+    FGridSize := pGridSize;
+  end;
+
+  procedure TCamComparator.SetGridColor(const pGridColor: TColor);
+  begin
+    FGridColor := pGridColor;
+  end;
+
+  procedure TCamComparator.SetHighlightColor(const pHighlightColor: TColor);
+  begin
+    FHighlightColor := pHighlightColor;
   end;
 
 end.

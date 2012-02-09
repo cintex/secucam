@@ -113,9 +113,9 @@ RootDir=
 IncludeVerInfo=1
 AutoIncBuild=1
 MajorVer=0
-MinorVer=1
+MinorVer=5
 Release=1
-Build=2
+Build=4
 Debug=1
 PreRelease=1
 Special=0
@@ -126,13 +126,13 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=PWarnimo Software Development
 FileDescription=A program that allows a user to use any IP or USB Cam for video surveillance.
-FileVersion=0.1.1.2
+FileVersion=0.5.1.4
 InternalName=secucam_cst
 LegalCopyright=
 LegalTrademarks=
 OriginalFilename=
 ProductName=SecuCAM Camera Surveillance Tool
-ProductVersion=0.1.1 ALPHA
+ProductVersion=0.5.1 BETA
 Comments=
 [HistoryLists\hlUnitAliases]
 Count=1

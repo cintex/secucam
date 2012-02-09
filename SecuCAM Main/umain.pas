@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, ToolWin, Menus, ExtCtrls, VFrames, ImgList;
+  Dialogs, StdCtrls, ComCtrls, ToolWin, Menus, ExtCtrls, VFrames, ImgList,
+  ucamcomparator;
 
 type
   TfrmMain = class(TForm)
@@ -25,10 +26,6 @@ type
     pgMain: TPageControl;
     tbsMain: TTabSheet;
     tbsExtended: TTabSheet;
-    pbCamW1: TPaintBox;
-    pbCamW2: TPaintBox;
-    pbCamW3: TPaintBox;
-    pbCamW4: TPaintBox;
     tmGeneral: TTimer;
     imgIcoLst: TImageList;
     ToolButton6: TToolButton;
@@ -39,18 +36,36 @@ type
     mmiMinimize: TMenuItem;
     mmiOptions: TMenuItem;
     mmiAddCam: TMenuItem;
-    procedure pbCamW1Paint(Sender: TObject);
-    procedure pbCamW2Paint(Sender: TObject);
-    procedure pbCamW3Paint(Sender: TObject);
-    procedure pbCamW4Paint(Sender: TObject);
+    tbtnRunTest: TToolButton;
+    ToolButton11: TToolButton;
+    imgCamW1: TImage;
+    shCamW1det: TShape;
+    Shape2: TShape;
+    Shape3: TShape;
+    Shape4: TShape;
+    Shape5: TShape;
+    Shape6: TShape;
+    Shape7: TShape;
+    Shape8: TShape;
+    Shape9: TShape;
+    Shape10: TShape;
+    CamW1prog: TProgressBar;
+    ProgressBar2: TProgressBar;
+    ProgressBar3: TProgressBar;
+    ProgressBar4: TProgressBar;
+    imgCamW2: TImage;
+    imgCamW3: TImage;
+    imgCamW4: TImage;
     procedure FormShow(Sender: TObject);
     procedure tmGeneralTimer(Sender: TObject);
     procedure mmiExitClick(Sender: TObject);
     procedure mmiAboutClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure tbtnRunTestClick(Sender: TObject);
   private
     { Private declarations }
   public
-    { Public declarations }
+    Cam1: TCamComparator;
   end;
 
 var
@@ -62,30 +77,6 @@ uses
   usplash, uabout;
 
 {$R *.dfm}
-
-procedure TfrmMain.pbCamW1Paint(Sender: TObject);
-begin
-  pbCamW1.Canvas.Rectangle (1,1,320,240);
-  pbCamW1.Canvas.TextOut(10,10,'Keine Kamera definiert!');
-end;
-
-procedure TfrmMain.pbCamW2Paint(Sender: TObject);
-begin
-  pbCamW2.Canvas.Rectangle (1,1,320,240);
-  pbCamW2.Canvas.TextOut(10,10,'Keine Kamera definiert!');
-end;
-
-procedure TfrmMain.pbCamW3Paint(Sender: TObject);
-begin
-  pbCamW3.Canvas.Rectangle (1,1,320,240);
-  pbCamW3.Canvas.TextOut(10,10,'Keine Kamera definiert!');
-end;
-
-procedure TfrmMain.pbCamW4Paint(Sender: TObject);
-begin
-  pbCamW4.Canvas.Rectangle (1,1,320,240);
-  pbCamW4.Canvas.TextOut(10,10,'Keine Kamera definiert!');
-end;
 
 procedure TfrmMain.FormShow(Sender: TObject);
 begin
@@ -105,6 +96,31 @@ end;
 procedure TfrmMain.mmiAboutClick(Sender: TObject);
 begin
   frmAbout.ShowModal;
+end;
+
+procedure TfrmMain.FormCreate(Sender: TObject);
+begin
+  Cam1:= TCamComparator.Create;
+  imgCamW1.Canvas.Rectangle (0,0,320,240);
+  imgCamW1.Canvas.TextOut(10,10,'Keine Kamera definiert!');
+  imgCamW2.Canvas.Rectangle (0,0,320,240);
+  imgCamW2.Canvas.TextOut(10,10,'Keine Kamera definiert!');
+  imgCamW3.Canvas.Rectangle (0,0,320,240);
+  imgCamW3.Canvas.TextOut(10,10,'Keine Kamera definiert!');
+  imgCamW4.Canvas.Rectangle (0,0,320,240);
+  imgCamW4.Canvas.TextOut(10,10,'Keine Kamera definiert!');
+end;
+
+procedure TfrmMain.tbtnRunTestClick(Sender: TObject);
+begin
+  Cam1.Sensitivity:= 3;
+  Cam1.GridSize:= 16;
+  Cam1.DoHighlight:= false;
+  Cam1.GridColor:= clLime;
+  Cam1.HighlightColor:= clRed;
+  Cam1.GetPicture (imgCamW1);
+  CamW1prog.Position:= 55;
+  shCamW1det.Brush.Color:= clRed;
 end;
 
 end.

@@ -1278,9 +1278,9 @@ object frmAbout: TfrmAbout
   object Label2: TLabel
     Left = 216
     Top = 40
-    Width = 64
+    Width = 65
     Height = 13
-    Caption = 'Alpha release'
+    Caption = 'BETA release'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clRed
     Font.Height = -11
@@ -1293,7 +1293,7 @@ object frmAbout: TfrmAbout
     Top = 16
     Width = 116
     Height = 24
-    Caption = 'SecuCAM 0.1'
+    Caption = 'SecuCAM 0.5'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -20
@@ -1311,9 +1311,9 @@ object frmAbout: TfrmAbout
   object Label4: TLabel
     Left = 128
     Top = 96
-    Width = 131
+    Width = 124
     Height = 13
-    Caption = 'Version: 0.1 ALPHA release'
+    Caption = 'Version: 0.5 BETA release'
   end
   object Label5: TLabel
     Left = 16
