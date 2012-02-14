@@ -1291,9 +1291,9 @@ object frmSplash: TfrmSplash
   object Label2: TLabel
     Left = 216
     Top = 32
-    Width = 65
+    Width = 103
     Height = 13
-    Caption = 'BETA release'
+    Caption = 'Internal BETA release'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clRed
     Font.Height = -11

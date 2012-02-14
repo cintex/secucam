@@ -53,7 +53,7 @@ type
     property HighlightColor: TColor read FHighlightColor write SetHighlightColor;
     property Busy: boolean read FBusy;
 
-    procedure GetPicture (var pCamImage: TBitmap);
+    procedure GetPicture (var pCamImage: TImage);
     procedure CheckDifference (pImgCmp, pImgRef: TImage;
                                pDifference: integer);
   end;
@@ -71,7 +71,7 @@ implementation
     ImgCmpFull.Picture.Bitmap.PixelFormat:= pf24bit;
     ImgCmpFull.Picture.Bitmap.Width:= 320;
     ImgCmpFull.Picture.Bitmap.Height:= 240;
-    ImgRefFull.Canvas.TextOut(10,300,'Sleeping zzzZZZzzzZZZ');
+    ImgCmpFull.Canvas.TextOut(10,215,'Sleeping zzzZZZzzzZZZ');
 
     ImgRefPart:= TImage.Create (nil);
     ImgRefPart.Picture.Bitmap.PixelFormat:= pf24bit;
@@ -96,18 +96,20 @@ implementation
     inherited;
   end;
 
-  procedure TCamComparator.GetPicture(var pCamImage: TBitmap);
+  procedure TCamComparator.GetPicture(var pCamImage: TImage);
   var I: integer;
   begin
     if not FBusy = true then begin
-      pCamImage:= ImgCmpFull.Picture.Bitmap;
-      if FDoHighlight = true then
+      pCamImage.Picture:= ImgCmpFull.Picture;
+      if FDoHighlight = true then begin
+        pCamImage.Canvas.Pen.Color:= FGridColor;
         for I:= 1 to FGridSize do begin
-          pCamImage.Canvas.Polyline ([Point (round (I * (320 / FGridSize + 1)), 0),
-                                      Point (round (I * (320 / FGridSize + 1)), 240)]);
-          pCamImage.Canvas.Polyline ([Point (0, round (I * (240 / (round (FGridSize / 4) * 3) + 1))),
-                                      Point (320, round (I * (240 / (round (FGridSize / 4) * 3) + 1)))]);
+          pCamImage.Canvas.Polyline ([Point (round (I * (320 / FGridSize)), 0),
+                                      Point (round (I * (320 / FGridSize)), 240)]);
+          pCamImage.Canvas.Polyline ([Point (0, round (I * (240 / FGridSize))),
+                                      Point (320, round (I * (240 / FGridSize)))]);
         end;
+      end;
       pCamImage.Canvas.TextOut(10,10,FormatDateTime('yyyy-mm-dd hh:nn:ss', now));
     end
   end;

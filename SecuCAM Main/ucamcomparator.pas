@@ -71,7 +71,7 @@ implementation
     ImgCmpFull.Picture.Bitmap.PixelFormat:= pf24bit;
     ImgCmpFull.Picture.Bitmap.Width:= 320;
     ImgCmpFull.Picture.Bitmap.Height:= 240;
-    ImgCmpFull.Canvas.TextOut(10,215,'Sleeping zzzZZZzzzZZZ');
+    ImgCmpFull.Canvas.TextOut(10,215,'Keine Kamera aktiv!');
 
     ImgRefPart:= TImage.Create (nil);
     ImgRefPart.Picture.Bitmap.PixelFormat:= pf24bit;

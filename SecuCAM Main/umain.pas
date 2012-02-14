@@ -16,11 +16,11 @@ type
     mmiAbout: TMenuItem;
     mmiExit: TMenuItem;
     tbMain: TToolBar;
-    ToolButton1: TToolButton;
-    ToolButton2: TToolButton;
+    tbtnGo: TToolButton;
+    tbtnHalt: TToolButton;
     ToolButton3: TToolButton;
-    ToolButton4: TToolButton;
-    ToolButton5: TToolButton;
+    tbtnPlay: TToolButton;
+    tbtnPause: TToolButton;
     sbStatus: TStatusBar;
     lbCamList: TListBox;
     pgMain: TPageControl;
@@ -28,10 +28,10 @@ type
     tbsExtended: TTabSheet;
     tmGeneral: TTimer;
     imgIcoLst: TImageList;
-    ToolButton6: TToolButton;
+    tbtnStop: TToolButton;
     ToolButton7: TToolButton;
-    ToolButton8: TToolButton;
-    ToolButton9: TToolButton;
+    tbtnAddCam: TToolButton;
+    tbtnSettings: TToolButton;
     N1: TMenuItem;
     mmiMinimize: TMenuItem;
     mmiOptions: TMenuItem;
@@ -56,16 +56,31 @@ type
     imgCamW2: TImage;
     imgCamW3: TImage;
     imgCamW4: TImage;
+    Label1: TLabel;
+    Bevel1: TBevel;
+    TabSheet1: TTabSheet;
+    Label2: TLabel;
+    Bevel2: TBevel;
+    Label3: TLabel;
+    Label4: TLabel;
+    Button1: TButton;
+    Button2: TButton;
+    Button3: TButton;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label7: TLabel;
     procedure FormShow(Sender: TObject);
     procedure tmGeneralTimer(Sender: TObject);
     procedure mmiExitClick(Sender: TObject);
     procedure mmiAboutClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure tbtnRunTestClick(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
   public
-    Cam1: TCamComparator;
+    MyCams: array[0..31] of TCamComparator;
+    //Cam1: TCamComparator;
   end;
 
 var
@@ -99,25 +114,36 @@ begin
 end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
+var I     : integer;
+    TmpPic: TImage;
 begin
-  Cam1:= TCamComparator.Create;
-  imgCamW1.Canvas.TextOut(10,10,'Keine Kamera definiert!');
-  imgCamW2.Canvas.TextOut(10,10,'Keine Kamera definiert!');
-  imgCamW3.Canvas.TextOut(10,10,'Keine Kamera definiert!');
-  imgCamW4.Canvas.TextOut(10,10,'Keine Kamera definiert!');
+  TmpPic:= TImage.Create (nil);
+  for I:= 0 to 3 do begin
+    MyCams[I]:= TCamComparator.Create;
+    MyCams[I].Sensitivity:= 15;
+    MyCams[I].GridSize:= 32;
+    MyCams[I].DoHighlight:= false;
+  end;
+  MyCams[0].GetPicture (imgCamW1);
+  MyCams[1].GetPicture (imgCamW2);
+  MyCams[2].GetPicture (imgCamW3);
+  MyCams[3].GetPicture (imgCamW4);
+  TmpPic.Destroy;
 end;
 
 procedure TfrmMain.tbtnRunTestClick(Sender: TObject);
 begin
-  Cam1.Sensitivity:= 3;
-  Cam1.GridSize:= 16;
-  Cam1.DoHighlight:= true;
-  Cam1.GridColor:= clRed;
-  Cam1.HighlightColor:= clRed;
-  Cam1.GetPicture (imgCamW1);
-  CamW1prog.Position:= 55;
+  // Test prozeduren hier
   shCamW1det.Brush.Color:= clRed;
   sbStatus.Panels[1].Text:= 'Detektion an Kamera 1';
+end;
+
+procedure TfrmMain.FormDestroy(Sender: TObject);
+var I: integer;
+begin
+  for I:= 0 to 3 do begin
+    MyCams[I].Destroy;
+  end;
 end;
 
 end.
