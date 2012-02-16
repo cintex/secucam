@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls, ToolWin, Menus, ExtCtrls, VFrames, ImgList,
-  ucamcomparator;
+  ucamcomparator, uaddcam, CoolTrayIcon;
 
 type
   TfrmMain = class(TForm)
@@ -69,6 +69,12 @@ type
     Label5: TLabel;
     Label6: TLabel;
     Label7: TLabel;
+    CoolTrayIcon1: TCoolTrayIcon;
+    pmMain: TPopupMenu;
+    Minimizetotray1: TMenuItem;
+    N2: TMenuItem;
+    Close1: TMenuItem;
+    Stealthmode1: TMenuItem;
     procedure FormShow(Sender: TObject);
     procedure tmGeneralTimer(Sender: TObject);
     procedure mmiExitClick(Sender: TObject);
@@ -76,6 +82,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure tbtnRunTestClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure mmiAddCamClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -144,6 +151,11 @@ begin
   for I:= 0 to 3 do begin
     MyCams[I].Destroy;
   end;
+end;
+
+procedure TfrmMain.mmiAddCamClick(Sender: TObject);
+begin
+  frmAddCam.ShowModal;
 end;
 
 end.
