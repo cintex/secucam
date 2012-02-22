@@ -143,9 +143,9 @@ uses
                  'Ref=>'+IntToStr (DivBr)+' '+
                  'Cmp=>'+IntToStr (DivBc)+ ' '+
                  'Diff=>'+IntToStr (abs(DivBr - DivBc))); *}
-    if (abs (DivRr - DivRc) > 15) OR
-       (abs (DivGr - DivGc) > 15) OR
-       (abs (DivBr - DivBc) > 15) then Result:= true;
+    if (abs (DivRr - DivRc) > 4) OR
+       (abs (DivGr - DivGc) > 4) OR
+       (abs (DivBr - DivBc) > 4) then Result:= true;
   end;
 
 {$R *.dfm}
