@@ -193,6 +193,7 @@ object frmAddCam: TfrmAddCam
     Width = 89
     Height = 25
     Caption = '&Hinzuf'#252'gen'
+    ModalResult = 1
     TabOrder = 1
   end
   object btnCancel: TButton
@@ -201,6 +202,7 @@ object frmAddCam: TfrmAddCam
     Width = 89
     Height = 25
     Caption = '&Abbrechen'
+    ModalResult = 2
     TabOrder = 2
   end
   object dlgColor: TColorDialog

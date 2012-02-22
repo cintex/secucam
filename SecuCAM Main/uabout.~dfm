@@ -1311,9 +1311,9 @@ object frmAbout: TfrmAbout
   object Label4: TLabel
     Left = 128
     Top = 96
-    Width = 131
+    Width = 124
     Height = 13
-    Caption = 'Version: 0.1 ALPHA release'
+    Caption = 'Version: 0.5 BETA release'
   end
   object Label5: TLabel
     Left = 16

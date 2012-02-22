@@ -7,7 +7,9 @@ uses
   uabout in 'uabout.pas' {frmAbout},
   ucamcomparator in 'ucamcomparator.pas',
   uaddcam in 'uaddcam.pas' {frmAddCam},
-  ucamdb in 'ucamdb.pas';
+  ucamdb in 'ucamdb.pas',
+  ucam in 'ucam.pas',
+  ucam_v2 in 'ucam_v2.pas';
 
 {$R *.res}
 

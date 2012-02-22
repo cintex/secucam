@@ -35,10 +35,10 @@ type
     FHighlightColor : TColor;
     FBusy           : boolean;
 
-    procedure SetSensitivity (const pSensitivity: integer);
-    procedure SetDoHighlight (const pDoHighlight: boolean);
-    procedure SetGridSize (const pGridSize: integer);
-    procedure SetGridColor (const pGridColor: TColor);
+    procedure SetSensitivity    (const pSensitivity: integer);
+    procedure SetDoHighlight    (const pDoHighlight: boolean);
+    procedure SetGridSize       (const pGridSize: integer);
+    procedure SetGridColor      (const pGridColor: TColor);
     procedure SetHighlightColor (const pHighlightColor: TColor);
 
     function CompareSquare (pSqRef, pSqCmp: TImage): boolean;
@@ -46,12 +46,12 @@ type
     constructor Create;
     destructor  Destroy; override;
 
-    property Sensitivity: integer read FSensitivity write SetSensitivity;
-    property GridSize: integer read FGridSize write SetGridSize;
-    property DoHighlight: boolean read FDoHighlight write SetDoHighlight;
-    property GridColor: TColor read FGridColor write SetGridColor;
-    property HighlightColor: TColor read FHighlightColor write SetHighlightColor;
-    property Busy: boolean read FBusy;
+    property Sensitivity    : integer read FSensitivity write SetSensitivity;
+    property GridSize       : integer read FGridSize write SetGridSize;
+    property DoHighlight    : boolean read FDoHighlight write SetDoHighlight;
+    property GridColor      : TColor read FGridColor write SetGridColor;
+    property HighlightColor : TColor read FHighlightColor write SetHighlightColor;
+    property Busy           : boolean read FBusy;
 
     procedure GetPicture (var pCamImage: TImage);
     procedure CheckDifference (pImgCmp, pImgRef: TImage;
@@ -93,7 +93,7 @@ implementation
     ImgCmpFull.Destroy;
     ImgRefPart.Destroy;
     ImgCmpPart.Destroy;
-    inherited;
+    inherited Destroy;
   end;
 
   procedure TCamComparator.GetPicture(var pCamImage: TImage);

@@ -3,16 +3,8 @@ unit ucamdb;
 interface
 
 uses
-  SysUtils, Classes, ucamcomparator;
+  SysUtils, Classes;
 
-type
-  TPCam = ^TCamDB;
-
-  TCamDB = class
-  private
-    NextCam: TPCam;
-  public
-  end;
 
 implementation
 

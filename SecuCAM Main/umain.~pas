@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ComCtrls, ToolWin, Menus, ExtCtrls, VFrames, ImgList,
-  ucamcomparator, uaddcam, CoolTrayIcon;
+  ucamcomparator, uaddcam, CoolTrayIcon, ucam_v2;
 
 type
   TfrmMain = class(TForm)
@@ -17,7 +17,6 @@ type
     mmiExit: TMenuItem;
     tbMain: TToolBar;
     tbtnGo: TToolButton;
-    tbtnHalt: TToolButton;
     ToolButton3: TToolButton;
     tbtnPlay: TToolButton;
     tbtnPause: TToolButton;
@@ -69,12 +68,15 @@ type
     Label5: TLabel;
     Label6: TLabel;
     Label7: TLabel;
-    CoolTrayIcon1: TCoolTrayIcon;
+    tricoSecu: TCoolTrayIcon;
     pmMain: TPopupMenu;
-    Minimizetotray1: TMenuItem;
+    mmiMinimizeToTray: TMenuItem;
     N2: TMenuItem;
-    Close1: TMenuItem;
-    Stealthmode1: TMenuItem;
+    mmiClose: TMenuItem;
+    mmiStealthMode: TMenuItem;
+    imgIcoTray: TImageList;
+    pmCams: TPopupMenu;
+    tbtnHalt: TToolButton;
     procedure FormShow(Sender: TObject);
     procedure tmGeneralTimer(Sender: TObject);
     procedure mmiExitClick(Sender: TObject);
@@ -83,6 +85,9 @@ type
     procedure tbtnRunTestClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure mmiAddCamClick(Sender: TObject);
+    procedure mmiMinimizeToTrayClick(Sender: TObject);
+    procedure tbtnGoClick(Sender: TObject);
+    procedure tbtnHaltClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -102,7 +107,7 @@ uses
 
 procedure TfrmMain.FormShow(Sender: TObject);
 begin
-  frmSplash.ShowModal;
+  //frmSplash.ShowModal;
 end;
 
 procedure TfrmMain.tmGeneralTimer(Sender: TObject);
@@ -124,6 +129,7 @@ procedure TfrmMain.FormCreate(Sender: TObject);
 var I     : integer;
     TmpPic: TImage;
 begin
+  tricoSecu.IconIndex:= 2;
   TmpPic:= TImage.Create (nil);
   for I:= 0 to 3 do begin
     MyCams[I]:= TCamComparator.Create;
@@ -139,10 +145,22 @@ begin
 end;
 
 procedure TfrmMain.tbtnRunTestClick(Sender: TObject);
+var Cam: TCam;
+    Cam2: TCam;
 begin
   // Test prozeduren hier
-  shCamW1det.Brush.Color:= clRed;
-  sbStatus.Panels[1].Text:= 'Detektion an Kamera 1';
+    Cam:= TCam.Create (Self);
+    Cam2:= TCam.Create (Self);
+    Cam.Parent:= tbsMain;
+    Cam2.Parent:= tbsMain;
+    Cam.Left:= 8;
+    Cam2.Left:= 360;
+    Cam.Top:= 8;
+    Cam2.Top:= 8;
+    Cam.AttachedCam:= 'USB Video Device';
+    Cam2.AttachedCam:= 'Logitech QuickCam Express';
+    Cam.VideoStart;
+    Cam2.VideoStart;
 end;
 
 procedure TfrmMain.FormDestroy(Sender: TObject);
@@ -155,7 +173,35 @@ end;
 
 procedure TfrmMain.mmiAddCamClick(Sender: TObject);
 begin
-  frmAddCam.ShowModal;
+  if frmAddCam.ShowModal = mrOk then begin
+    //
+  end;
+end;
+
+procedure TfrmMain.mmiMinimizeToTrayClick(Sender: TObject);
+begin
+  if frmMain.Visible = true then begin
+    mmiMinimizeToTray.Caption:= 'Maximize';
+    frmMain.Visible:= false;
+  end
+  else begin
+    mmiMinimizeToTray.Caption:= 'Minimize to tray';
+    frmMain.Visible:= true;
+  end;
+end;
+
+procedure TfrmMain.tbtnGoClick(Sender: TObject);
+begin
+  tricoSecu.IconIndex:= 0;
+  tricoSecu.ShowBalloonHint('Information', 'Kamera Überwachung ist jetzt aktiv!',
+                            bitInfo,10);
+end;
+
+procedure TfrmMain.tbtnHaltClick(Sender: TObject);
+begin
+  tricoSecu.IconIndex:= 2;
+  tricoSecu.ShowBalloonHint('Information', 'Kamera Überwachung gestoppt!',
+                            bitWarning,10);
 end;
 
 end.
