@@ -58,7 +58,7 @@ implementation
     inherited Destroy;
   end;
 
-  procedure TCam.CamTimerEvent (var pCamPicture: TImage; Sender: TObject);
+  procedure TCam.CamTimerEvent (Sender: TObject);
   begin
     //check cam pics
   end;

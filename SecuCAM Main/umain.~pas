@@ -1,3 +1,15 @@
+{*******************************************************************************
+     *  SecuCAM CST // umain.pas *
+     *****************************
+
+  Entwickelt von : WARNIMONT POL
+                   T3IF @ Lycée du Nord
+                   2011 - 2012
+
+  Beschreibung : Haupt Unit des Programms.
+
+********************************************************************************}
+
 unit umain;
 
 interface
@@ -37,24 +49,12 @@ type
     mmiAddCam: TMenuItem;
     tbtnRunTest: TToolButton;
     ToolButton11: TToolButton;
-    imgCamW1: TImage;
-    shCamW1det: TShape;
-    Shape2: TShape;
-    Shape3: TShape;
-    Shape4: TShape;
+    imgFiller1: TImage;
     Shape5: TShape;
     Shape6: TShape;
-    Shape7: TShape;
-    Shape8: TShape;
-    Shape9: TShape;
-    Shape10: TShape;
-    CamW1prog: TProgressBar;
-    ProgressBar2: TProgressBar;
-    ProgressBar3: TProgressBar;
-    ProgressBar4: TProgressBar;
-    imgCamW2: TImage;
-    imgCamW3: TImage;
-    imgCamW4: TImage;
+    imgFiller2: TImage;
+    imgFiller3: TImage;
+    imgFiller4: TImage;
     Label1: TLabel;
     Bevel1: TBevel;
     TabSheet1: TTabSheet;
@@ -126,49 +126,52 @@ begin
 end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
-var I     : integer;
-    TmpPic: TImage;
 begin
+  Doublebuffered:= true;
   tricoSecu.IconIndex:= 2;
-  TmpPic:= TImage.Create (nil);
-  for I:= 0 to 3 do begin
-    MyCams[I]:= TCamComparator.Create;
-    MyCams[I].Sensitivity:= 15;
-    MyCams[I].GridSize:= 32;
-    MyCams[I].DoHighlight:= false;
-  end;
-  MyCams[0].GetPicture (imgCamW1);
-  MyCams[1].GetPicture (imgCamW2);
-  MyCams[2].GetPicture (imgCamW3);
-  MyCams[3].GetPicture (imgCamW4);
-  TmpPic.Destroy;
 end;
 
 procedure TfrmMain.tbtnRunTestClick(Sender: TObject);
 var Cam: TCam;
     Cam2: TCam;
+    Cam3: TCam;
+    Cam4: TCam;
 begin
   // Test prozeduren hier
-    Cam:= TCam.Create (Self);
-    Cam2:= TCam.Create (Self);
-    Cam.Parent:= tbsMain;
-    Cam2.Parent:= tbsMain;
-    Cam.Left:= 8;
-    Cam2.Left:= 360;
-    Cam.Top:= 8;
-    Cam2.Top:= 8;
-    Cam.AttachedCam:= 'USB Video Device';
-    Cam2.AttachedCam:= 'Logitech QuickCam Express';
-    Cam.VideoStart;
-    Cam2.VideoStart;
+  Cam:= TCam.Create (tbsMain);
+  Cam.AttachedCam:= 'USB Video Device';
+  Cam.Top:= 8;
+  Cam.Left:= 8;
+  Cam.Visible:= true;
+  Cam.MotionDetection:= false;
+  //Cam.CamComparator.DoHighlight:= true;
+  //Cam.CamComparator.Sensitivity:= 10;
+  //Cam.FrameRate:= 500;
+  Cam.VideoStart;
+
+  Cam2:= TCam.Create (tbsMain);
+  Cam2.Top:= 8;
+  Cam2.Left:= 360;
+
+  Cam3:= TCam.Create (tbsMain);
+  Cam3.AttachedCam:= 'Logitech QuickCam Express';
+  Cam3.Top:= 264;
+  Cam3.Left:= 8;
+  Cam3.Visible:= true;
+  Cam3.MotionDetection:= true;
+  Cam3.CamComparator.DoHighlight:= true;
+  Cam3.CamComparator.Sensitivity:= 10;
+  Cam3.VideoStart;
+
+  Cam4:= TCam.Create (tbsMain);
+  Cam4.Top:= 264;
+  Cam4.Left:= 360;
 end;
 
 procedure TfrmMain.FormDestroy(Sender: TObject);
 var I: integer;
 begin
-  for I:= 0 to 3 do begin
-    MyCams[I].Destroy;
-  end;
+  //
 end;
 
 procedure TfrmMain.mmiAddCamClick(Sender: TObject);

@@ -9,7 +9,8 @@ uses
   uaddcam in 'uaddcam.pas' {frmAddCam},
   ucamdb in 'ucamdb.pas',
   ucam in 'ucam.pas',
-  ucam_v2 in 'ucam_v2.pas';
+  ucam_v2 in 'ucam_v2.pas',
+  ucamcomparator_v2 in 'ucamcomparator_v2.pas';
 
 {$R *.res}
 

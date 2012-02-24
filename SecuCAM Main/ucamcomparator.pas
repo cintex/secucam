@@ -1,11 +1,16 @@
 {*******************************************************************************
-  In dieser Unit befinden sich alle Funktionen um die Bilder der Kamera zu
-  vergleichen.
+     *  SecuCAM CST // ucamcomparator.pas *    !!! OBSOLETE !!!
+     **************************************
 
-  Functions:
-   -CompareSquare
+  Entwickelt von : WARNIMONT POL
+                   T3IF @ Lycée du Nord
+                   2011 - 2012
 
-********************************************************************************}
+  Beschreibung : Unit beinhaltet alle Funktionen um ein Kamerabild auf eine
+                 Bewegung zu überprüfen.
+
+*******************************************************************************}
+
 unit ucamcomparator;
 
 interface
@@ -54,7 +59,7 @@ type
     property Busy           : boolean read FBusy;
 
     procedure GetPicture (var pCamImage: TImage);
-    procedure CheckDifference (pImgCmp, pImgRef: TImage;
+    procedure CheckDifference (pImgCmp, pImgRef: TBitmap;
                                pDifference: integer);
   end;
 
@@ -114,7 +119,7 @@ implementation
     end
   end;
 
-  procedure TCamComparator.CheckDifference (pImgCmp, pImgRef: TImage;
+  procedure TCamComparator.CheckDifference (pImgCmp, pImgRef: TBitmap;
                                             pDifference: integer);
   var I, J          : integer;
       CNTSqX, CNTSqY: integer;
@@ -128,18 +133,19 @@ implementation
     RatioY:= round (FGridSize / 4) * 3;
     ImgRefPart.Picture.Bitmap.Width:= RatioX;
     ImgRefPart.Picture.Bitmap.Height:= RatioY;
+    ImgRefFull.Picture.Bitmap:= pImgRef;
     ImgCmpPart.Picture.Bitmap.Width:= RatioX;
     ImgCmpPart.Picture.Bitmap.Height:= RatioY;
-    ImgCmpFull.Picture.Bitmap:= pImgCmp.Picture.Bitmap;
+    ImgCmpFull.Picture.Bitmap:= pImgCmp;
     if FDoHighlight = true then ImgCmpFull.Canvas.Pen.Color:= FHighlightColor;
     FBusy:= true;
     for I:= 1 to round (320 / RatioX) do begin
       for J:= 1 to round (240 / RatioY) do begin
         ImgCmpPart.Canvas.CopyRect (Rect (0,0,RatioX, RatioX),
-                                    pImgCmp.Canvas,
+                                    ImgCmpFull.Canvas,
                                     Rect (CNTSqX, CNTSqY, CNTSqX + RatioX, CNTSqY + RatioY));
         ImgRefPart.Canvas.CopyRect (Rect (0,0,RatioX, RatioY),
-                                    pImgRef.Canvas,
+                                    ImgRefFull.Canvas,
                                     Rect (CNTSqX, CNTSqY, CNTSqX + RatioX, CNTSqY + RatioY));
         if CompareSquare (ImgRefPart, ImgCmpPart) = true then begin
           inc (Difference);

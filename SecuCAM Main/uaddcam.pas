@@ -1,3 +1,15 @@
+{*******************************************************************************
+     *  SecuCAM CST // uaddcam.pas *
+     *******************************
+
+  Entwickelt von : WARNIMONT POL
+                   T3IF @ Lycée du Nord
+                   2011 - 2012
+
+  Beschreibung : Unit für die Form, um eine Kamera hinzuzufügen.
+
+*******************************************************************************}
+
 unit uaddcam;
 
 interface

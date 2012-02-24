@@ -1,3 +1,16 @@
+{*******************************************************************************
+     *  SecuCAM CST // ucam.pas *     !!! OBSOLETE !!!
+     ****************************
+
+  Entwickelt von : WARNIMONT POL
+                   T3IF @ Lycée du Nord
+                   2011 - 2012
+
+  Beschreibung : Unit enthällt die Klasse TCam.
+                 TCam definiert eine Kamera
+
+*******************************************************************************}
+
 unit ucam;
 
 interface
