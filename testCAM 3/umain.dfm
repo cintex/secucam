@@ -141,7 +141,7 @@ object frmMain: TfrmMain
     MaxValue = 256
     MinValue = 0
     TabOrder = 4
-    Value = 32
+    Value = 16
   end
   object btnGetCurr: TButton
     Left = 744
@@ -150,6 +150,7 @@ object frmMain: TfrmMain
     Height = 17
     Caption = 'Get Current'
     TabOrder = 5
+    OnClick = btnGetCurrClick
   end
   object btnGetRef: TButton
     Left = 744

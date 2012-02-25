@@ -64,6 +64,7 @@ type
     procedure mmiTstClick(Sender: TObject);
     procedure btnCompClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure btnGetCurrClick(Sender: TObject);
   private
     CurrentCam: TVideoImage;
     CamActive : boolean;
@@ -124,12 +125,12 @@ uses
       end;
     end;
 
-    DivRr:= DivRr div 768;
-    DivRc:= DivRc div 786;
-    DivGr:= DivGr div 768;
-    DivGc:= DivGc div 786;
-    DivBr:= DivBr div 768;
-    DivBc:= DivBc div 786;
+    DivRr:= DivRr div 80;
+    DivRc:= DivRc div 80;
+    DivGr:= DivGr div 80;
+    DivGc:= DivGc div 80;
+    DivBr:= DivBr div 80;
+    DivBc:= DivBc div 80;
 
     {*Showmessage ('**RED** || '+
                  'Ref=>'+IntToStr (DivRr)+' '+
@@ -143,9 +144,9 @@ uses
                  'Ref=>'+IntToStr (DivBr)+' '+
                  'Cmp=>'+IntToStr (DivBc)+ ' '+
                  'Diff=>'+IntToStr (abs(DivBr - DivBc))); *}
-    if (abs (DivRr - DivRc) > 4) OR
-       (abs (DivGr - DivGc) > 4) OR
-       (abs (DivBr - DivBc) > 4) then Result:= true;
+    if (abs (DivRr - DivRc) > 5) OR
+       (abs (DivGr - DivGc) > 5) OR
+       (abs (DivBr - DivBc) > 5) then Result:= true;
   end;
 
 {$R *.dfm}
@@ -323,6 +324,43 @@ begin
   frmStatus.memStatus.Lines.Add('Program initialized.')
 end;
 //==============================================================================
+procedure TfrmMain.btnGetCurrClick(Sender: TObject);
+var I,J: integer;
+    SizeX, SizeY: integer;
+    CurrRefSq, CurrCmpSq: TImage;
+begin
+  CurrRefSq:= TImage.Create (nil);
+  CurrCmpSq:= TImage.Create (nil);
+  SizeX:= round (320 / speGrid.Value);
+  SizeY:= round (240 / speGrid.Value);
+  CurrRefSq.Width:= SizeX;
+  CurrRefSq.Height:= SizeY;
+  CurrCmpSq.Width:= SizeX;
+  CurrCmpSq.Height:= SizeY;
+  Showmessage ('SizeX:'+IntToStr(SizeX)+' SizeY:'+IntToStr(SizeY));
+  imgCamDifference.Picture:= imgCamReference.Picture;
+  for I:= 1 to speGrid.Value do begin
+    imgCamDifference.Canvas.Polyline ([Point (0,I*SizeY),
+                                    Point (320,I*SizeY)]);
+    imgCamDifference.Canvas.Polyline ([Point (I*SizeX, 0),
+                                    Point (I*SizeX, 240)]);
+  end;
+  for I:= 1 to 32 do begin
+    for J:= 1 to 32 do begin
+      CurrRefSq.Canvas.CopyRect (Rect (0,0,SizeX,SizeY),
+                                 imgCamCurrent.Canvas,
+                                 Rect ((J-1)*SizeX, (I-1)*SizeY, J*SizeX, I*SizeY));
+      CurrCmpSq.Canvas.CopyRect (Rect (0,0,SizeX,SizeY),
+                                 imgCamReference.Canvas,
+                                 Rect ((J-1)*SizeX, (I-1)*SizeY, J*SizeX, I*SizeY));
+      if CompareSquare (CurrRefSq, CurrCmpSq) = true then begin
+        imgCamDifference.Canvas.Polyline ([Point ((J-1)*SizeX,(I-1)*SizeY),
+                                        Point ((J)*SizeX,(I)*SizeY)]);
+      end;
+    end;
+  end;
+end;
+
 end.
 
 {* # Quellen:

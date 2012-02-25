@@ -64,6 +64,7 @@ type
     procedure mmiTstClick(Sender: TObject);
     procedure btnCompClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure btnGetCurrClick(Sender: TObject);
   private
     CurrentCam: TVideoImage;
     CamActive : boolean;
@@ -143,9 +144,9 @@ uses
                  'Ref=>'+IntToStr (DivBr)+' '+
                  'Cmp=>'+IntToStr (DivBc)+ ' '+
                  'Diff=>'+IntToStr (abs(DivBr - DivBc))); *}
-    if (abs (DivRr - DivRc) > 15) OR
-       (abs (DivGr - DivGc) > 15) OR
-       (abs (DivBr - DivBc) > 15) then Result:= true;
+    if (abs (DivRr - DivRc) > 4) OR
+       (abs (DivGr - DivGc) > 4) OR
+       (abs (DivBr - DivBc) > 4) then Result:= true;
   end;
 
 {$R *.dfm}
@@ -323,6 +324,34 @@ begin
   frmStatus.memStatus.Lines.Add('Program initialized.')
 end;
 //==============================================================================
+procedure TfrmMain.btnGetCurrClick(Sender: TObject);
+var I,J: integer;
+    SizeX, SizeY: integer;
+    CurrRefSq, CurrCmpSq: TBitmap;
+begin
+  CurrRefSq:= TBitmap.Create;
+  CurrCmpSq:= TBitmap.Create;
+  SizeX:= round (320 / speGrid.Value);
+  SizeY:= round (240 / speGrid.Value);
+  CurrRefSq.Width:= SizeX;
+  CurrRefSq.Height:= SizeY;
+  CurrCmpSq.Width:= SizeX;
+  CurrCmpSq.Height:= SizeY;
+  Showmessage ('SizeX:'+IntToStr(SizeX)+' SizeY:'+IntToStr(SizeY));
+  for I:= 1 to speGrid.Value do begin
+    imgCamCurrent.Canvas.Polyline ([Point (0,I*SizeY),
+                                    Point (320,I*SizeY)]);
+    imgCamCurrent.Canvas.Polyline ([Point (I*SizeX, 0),
+                                    Point (I*SizeX, 240)]);
+  end;
+  for I:= 1 to 16 do begin
+    for J:= 1 to 16 do begin
+      //imgCamCurrent.Canvas.Polyline ([Point ((J-1)*SizeX,(I-1)*SizeY),
+      //                                Point ((J)*SizeX,(I)*SizeY)]);
+    end;
+  end;
+end;
+
 end.
 
 {* # Quellen:
