@@ -1,3 +1,15 @@
+{*******************************************************************************
+     *  SecuCAM CST // ucam_v2.pas *
+     *******************************
+
+  Entwickelt von : WARNIMONT POL
+                   T3IF @ Lycée du Nord
+                   2011 - 2012
+
+  Beschreibung : Unit enthällt die Klasse TCam.
+
+*******************************************************************************}
+
 unit ucam_v2;
 
 interface
