@@ -16,15 +16,17 @@ interface
 
 uses
   SysUtils, Classes, ComCtrls, StdCtrls, ExtCtrls, Windows, VFrames, Graphics,
-  Controls, ucamcomparator;
+  Controls, Dialogs, DateUtils, ucamcomparator_v2;
 
 type
   TCam = class
   private
     // *** Not visible on tbsMain **********************************************
     CamTimer : TTimer;
+    Timeout  : TTimer;
     Cam      : TVideoImage;
     CamImg   : TImage;
+    CamImg2  : TImage;
     ImgRef   : TBitmap;
     ImgCmp   : TBitmap;
 
@@ -36,6 +38,10 @@ type
 
     // *** General *************************************************************
     TakeRefPic : boolean;
+    Diff       : integer;
+    Time10     : integer;
+    TOut       : integer;
+    TmpDiff    : integer;
 
     // *** PROPERTY VARS *******************************************************
     FDectIntervall : integer;
@@ -47,6 +53,7 @@ type
     FLeft          : integer;
     FTop           : integer;
     FVisible       : boolean;
+    FAlarmLevel    : integer;
 
     // *** SETTERS *************************************************************
     procedure SetAttCam        (const pAttCam: string);
@@ -56,9 +63,11 @@ type
     procedure SetLeft          (const pLeft: integer);
     procedure SetTop           (const pTop: integer);
     procedure SetVisible       (const pVisible: boolean);
+    procedure SetAlarmLevel    (const pAlarmLevel: integer);
 
     // *** FUNKTIONEN & PROZEDUREN ** Private **********************************
     procedure OnCamTimer (Sender: TObject);
+    procedure OnTimeout (Sender: TObject);
   public
     CamComparator: TCamComparator;
 
@@ -75,6 +84,7 @@ type
     property Left            : integer read FLeft write SetLeft;
     property Top             : integer read FTop write SetTop;
     property Visible         : boolean read FVisible write SetVisible;
+    property AlarmLevel      : integer read FAlarmLevel write SetAlarmLevel;
 
     // *** FUNKTIONEN & PROZEDUREN ** Public ***********************************
     function VideoStart: boolean;
@@ -90,8 +100,8 @@ implementation
     FParent:= Parent;
     FVisible:= false;
     CamComparator:= TCamComparator.Create;
-    CamComparator.Sensitivity:= 3;
-    CamComparator.GridSize:= 16;
+    CamComparator.Sensitivity:= 10;
+    CamComparator.Resolution:= 16;
     ImgRef:= TBitmap.Create;
     ImgRef.Width:= 320;
     ImgRef.Height:= 240;
@@ -99,6 +109,9 @@ implementation
     ImgCmp.Width:= 320;
     ImgCmp.Height:= 240;
     TakeRefPic:= true;
+    Diff:= 0;
+    TOut:= 0;
+    TmpDiff:= 0;
 
     //*** Kamera Bild **********************************************************
     CamImage:= TImage.Create (nil);
@@ -118,11 +131,19 @@ implementation
     CamTimer.OnTimer:= OnCamTimer;
     CamTimer.Enabled:= FRunning;
 
+    Timeout:= TTimer.Create (nil);
+    Timeout.Interval:= 1000;
+    Timeout.OnTimer:= OnTimeout;
+    Timeout.Enabled:= false;
+
     //*** Video Optionen *******************************************************
     Cam:= TVideoImage.Create;
     CamImg:= TImage.Create (nil);
     CamImg.Width:= 320;
     CamImg.Height:= 240;
+    CamImg2:= TImage.Create (nil);
+    CamImg2.Width:= 320;
+    CamImg2.Height:= 240;
     Cam.SetDisplayCanvas (CamImg.Canvas);
 
     //*** Activity Shapes ******************************************************
@@ -161,24 +182,66 @@ implementation
     inherited;
   end;
 
+  {
+      TODO: Warte 10 Sekunden bis Kamera = Ready.
+  }
   procedure TCam.OnCamTimer (Sender: TObject);
-  var Diff: integer;
+  var I: integer;
   begin
+    //TOut:= 0;
+    DiffProg.Position:= Diff;
     if FMotDect = true then begin
       if TakeRefPic = true then begin
-        ImgRef:= CamImg.Picture.Bitmap;
+        //Ref:= CamImg.Picture.Bitmap;
+        CamImg2.Picture.Bitmap:= CamImg.Picture.Bitmap;
+        //CamImage.Picture.Bitmap:= CamImg2.Picture.Bitmap;
+        //ImgRef.LoadFromFile ('testscreen1.bmp');
+        //Showmessage ('here');
         TakeRefPic:= false;
       end
       else begin
         ImgCmp:= CamImg.Picture.Bitmap;
-        CamComparator.CheckDifference (ImgCmp, ImgRef, Diff);
-        CamComparator.GetPicture (CamImage);
-        TakeRefPic:= true;
+        //ImgCmp.SaveToFile('tsts1.bmp');
+        //Ref.SaveToFile('tsts2.bmp');
+        CamComparator.CheckDifference (ImgCmp, CamImg2.Picture.Bitmap, Diff);
+        //showmessage (IntToStr (Diff));
+        //Showmessage ('möp');
+        //showmessage (IntToStr (TOut));
+        if (Diff > FAlarmLevel) AND (TOut <= 10) then begin
+          //UserCode
+
+          ShapeDect.Brush.Color:= clRed;
+          //ImgCmp.Canvas.TextOut (10,50,'TOut: ' + IntToStr (TOut));
+          //showmessage ('D-'+IntToStr(Diff)+' T-'+IntToStr(TmpDiff));
+          if (Diff >= (TmpDiff - 2)) AND (Diff <= (TmpDiff + 2)) then inc (TOut)
+                                                                 else TOut:= 0;
+          TmpDiff:= Diff;
+        end
+        else begin
+          ShapeDect.Brush.Color:= clGreen;
+          TakeRefPic:= true;
+          TOut:= 0;
+          I:= 0;
+        end;
+        TmpDiff:= Diff;
+        CamImage.Picture.Bitmap:= ImgCmp;
       end;
     end
     else begin
       CamImage.Picture.Bitmap:= CamImg.Picture.Bitmap;
     end;
+  end;
+
+  procedure TCam.OnTimeout (Sender: TObject);
+  begin
+    if Time10 = 3 then begin
+      FMotDect:= true;
+      Timeout.Enabled:= false;
+    end
+    else begin
+      CamImage.Canvas.TextOut (10,30,IntToStr (Time10));
+      inc (Time10);
+    end
   end;
 
   procedure TCam.SetAttCam (const pAttCam: string);
@@ -188,7 +251,11 @@ implementation
 
   procedure TCam.SetMotDect (const pMotDect: boolean);
   begin
-    FMotDect:= pMotDect;
+    if pMotDect = true then begin
+      Time10:= 0;
+      Timeout.Enabled:= true;
+    end
+    else FMotDect:= pMotDect;
   end;
 
   procedure TCam.SetDectIntervall (const pDectIntervall: integer);
@@ -231,6 +298,11 @@ implementation
     ShapeAct.Visible:= FVisible;
     ShapeDect.Visible:= FVisible;
     DiffProg.Visible:= FVisible;
+  end;
+
+  procedure TCam.SetAlarmLevel (const pAlarmLevel: integer);
+  begin
+    FAlarmLevel:= pAlarmLevel;
   end;
 
   function TCam.VideoStart: boolean;

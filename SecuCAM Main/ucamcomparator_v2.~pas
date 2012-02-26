@@ -16,7 +16,7 @@ unit ucamcomparator_v2;
 interface
 
 uses
-  SysUtils, ExtCtrls, Graphics, Math, Types;
+  SysUtils, ExtCtrls, Graphics, Math, Types, Dialogs;
 
 type
   TRGB = packed record
@@ -72,7 +72,7 @@ type
     property Busy           : boolean read FBusy;
 
     // *** FUNKTIONEN & PROZEDUREN ** Public ***********************************
-    procedure CheckDifference (var pCmpImg, pRefImg: TBitmap; var pDiff: integer);
+    procedure CheckDifference (var pCmpImg: TBitmap; pRefImg: TBitmap; var pDiff: integer);
   end;
 
 implementation
@@ -188,9 +188,14 @@ implementation
        (abs (DiffBr - DiffBc) > FSensitivity) then Result:= true;
   end;
 
-  procedure TCamComparator.CheckDifference (var pCmpImg, pRefImg: TBitmap; var pDiff: integer);
-  var X, Y: integer;
+  procedure TCamComparator.CheckDifference (var pCmpImg: TBitmap; pRefImg: TBitmap; var pDiff: integer);
+  var X, Y  : integer;
+      Diff  : integer;
+      DiffR : real;
+      //Diff2 : integer;
+      //Diff3 : integer;
   begin
+    Diff:= 0;
     pCmpImg.Canvas.Pen.Color:= FHCol;
     for Y:= 1 to FResolution do begin
       for X:= 1 to FResolution do begin
@@ -201,7 +206,7 @@ implementation
                                        pRefImg.Canvas,
                                        Rect ((X-1)*SizeX, (Y-1)*SizeY, X*SizeX, Y*SizeY));
         if CompareSquare (ImgCompareSq, ImgReferenceSq) = true then begin
-
+          inc (Diff);
           if FDoHighlight = true then begin
             pCmpImg.Canvas.Polyline ([Point ((X-1)*SizeX, (Y-1)*SizeY),
                                       Point (X*SizeX, Y*SizeY)]);
@@ -209,6 +214,11 @@ implementation
         end;
       end;
     end;
+    pCmpImg.Canvas.TextOut (10,10,'Squares: ' + IntToStr (Diff));
+    DiffR:= Diff / 256;
+    DiffR:= DiffR * 100;
+    pDiff:= round (DiffR);
+    pCmpImg.Canvas.TextOut (10,30,'DiffPercent: ' + IntToStr (pDiff));
     if FShowGrid = true then begin
       pCmpImg.Canvas.Pen.Color:= FGridColor;
       for X:= 1 to SizeX do begin

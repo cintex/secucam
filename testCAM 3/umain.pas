@@ -196,7 +196,7 @@ begin
   end
   else begin
     imgCamReference.Picture:= imgCamMain.Picture;
-    btnCompClick (sender);
+    btnGetCurrClick (sender);
     shComp.Brush.Color:= clBlue;
     shCap.Brush.Color:= clWhite;
   end;
@@ -205,7 +205,7 @@ begin
   imgCamCurrent.Canvas.Pen.Width:= 1;
   Interval:= tmCap.Interval;
   I:= 1;
-  while I <> 320 do begin
+  {while I <> 320 do begin
     if I mod speGrid.Value = 0 then begin
       imgCamCurrent.Canvas.MoveTo(I,0);
       imgCamCurrent.Canvas.LineTo(I,240);
@@ -221,7 +221,7 @@ begin
     inc (I);
   end;
   imgCamCurrent.Canvas.TextOut (5,5,'GetFrame FPS: ' + FloatToStr(Round (1000 / Interval)));
-  imgCamMain.Canvas.TextOut (5,5,'Actual FPS: ' + FloatToStr (Round (CurrentCam.FramesPerSecond)));
+  imgCamMain.Canvas.TextOut (5,5,'Actual FPS: ' + FloatToStr (Round (CurrentCam.FramesPerSecond)));}
   //if Round (CurrentCam.FramesPerSecond) <> 0 then tmCap.Interval:= Round (1000 / CurrentCam.FramesPerSecond);
 end;
 
@@ -337,7 +337,8 @@ begin
   CurrRefSq.Height:= SizeY;
   CurrCmpSq.Width:= SizeX;
   CurrCmpSq.Height:= SizeY;
-  Showmessage ('SizeX:'+IntToStr(SizeX)+' SizeY:'+IntToStr(SizeY));
+  imgCamDifference.Canvas.Pen.Color:= clLime;
+  //Showmessage ('SizeX:'+IntToStr(SizeX)+' SizeY:'+IntToStr(SizeY));
   imgCamDifference.Picture:= imgCamReference.Picture;
   for I:= 1 to speGrid.Value do begin
     imgCamDifference.Canvas.Polyline ([Point (0,I*SizeY),
@@ -354,6 +355,7 @@ begin
                                  imgCamReference.Canvas,
                                  Rect ((J-1)*SizeX, (I-1)*SizeY, J*SizeX, I*SizeY));
       if CompareSquare (CurrRefSq, CurrCmpSq) = true then begin
+        imgCamDifference.Canvas.Pen.Color:= clLime;
         imgCamDifference.Canvas.Polyline ([Point ((J-1)*SizeX,(I-1)*SizeY),
                                         Point ((J)*SizeX,(I)*SizeY)]);
       end;

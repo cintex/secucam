@@ -125,12 +125,12 @@ uses
       end;
     end;
 
-    DivRr:= DivRr div 768;
-    DivRc:= DivRc div 786;
-    DivGr:= DivGr div 768;
-    DivGc:= DivGc div 786;
-    DivBr:= DivBr div 768;
-    DivBc:= DivBc div 786;
+    DivRr:= DivRr div 80;
+    DivRc:= DivRc div 80;
+    DivGr:= DivGr div 80;
+    DivGc:= DivGc div 80;
+    DivBr:= DivBr div 80;
+    DivBc:= DivBc div 80;
 
     {*Showmessage ('**RED** || '+
                  'Ref=>'+IntToStr (DivRr)+' '+
@@ -144,9 +144,9 @@ uses
                  'Ref=>'+IntToStr (DivBr)+' '+
                  'Cmp=>'+IntToStr (DivBc)+ ' '+
                  'Diff=>'+IntToStr (abs(DivBr - DivBc))); *}
-    if (abs (DivRr - DivRc) > 4) OR
-       (abs (DivGr - DivGc) > 4) OR
-       (abs (DivBr - DivBc) > 4) then Result:= true;
+    if (abs (DivRr - DivRc) > 5) OR
+       (abs (DivGr - DivGc) > 5) OR
+       (abs (DivBr - DivBc) > 5) then Result:= true;
   end;
 
 {$R *.dfm}
@@ -196,7 +196,7 @@ begin
   end
   else begin
     imgCamReference.Picture:= imgCamMain.Picture;
-    btnCompClick (sender);
+    btnGetCurrClick (sender);
     shComp.Brush.Color:= clBlue;
     shCap.Brush.Color:= clWhite;
   end;
@@ -205,7 +205,7 @@ begin
   imgCamCurrent.Canvas.Pen.Width:= 1;
   Interval:= tmCap.Interval;
   I:= 1;
-  while I <> 320 do begin
+  {while I <> 320 do begin
     if I mod speGrid.Value = 0 then begin
       imgCamCurrent.Canvas.MoveTo(I,0);
       imgCamCurrent.Canvas.LineTo(I,240);
@@ -221,7 +221,7 @@ begin
     inc (I);
   end;
   imgCamCurrent.Canvas.TextOut (5,5,'GetFrame FPS: ' + FloatToStr(Round (1000 / Interval)));
-  imgCamMain.Canvas.TextOut (5,5,'Actual FPS: ' + FloatToStr (Round (CurrentCam.FramesPerSecond)));
+  imgCamMain.Canvas.TextOut (5,5,'Actual FPS: ' + FloatToStr (Round (CurrentCam.FramesPerSecond)));}
   //if Round (CurrentCam.FramesPerSecond) <> 0 then tmCap.Interval:= Round (1000 / CurrentCam.FramesPerSecond);
 end;
 
@@ -327,27 +327,38 @@ end;
 procedure TfrmMain.btnGetCurrClick(Sender: TObject);
 var I,J: integer;
     SizeX, SizeY: integer;
-    CurrRefSq, CurrCmpSq: TBitmap;
+    CurrRefSq, CurrCmpSq: TImage;
 begin
-  CurrRefSq:= TBitmap.Create;
-  CurrCmpSq:= TBitmap.Create;
+  CurrRefSq:= TImage.Create (nil);
+  CurrCmpSq:= TImage.Create (nil);
   SizeX:= round (320 / speGrid.Value);
   SizeY:= round (240 / speGrid.Value);
   CurrRefSq.Width:= SizeX;
   CurrRefSq.Height:= SizeY;
   CurrCmpSq.Width:= SizeX;
   CurrCmpSq.Height:= SizeY;
-  Showmessage ('SizeX:'+IntToStr(SizeX)+' SizeY:'+IntToStr(SizeY));
+  imgCamDifference.Canvas.Pen.Color:= clLime;
+  //Showmessage ('SizeX:'+IntToStr(SizeX)+' SizeY:'+IntToStr(SizeY));
+  imgCamDifference.Picture:= imgCamReference.Picture;
   for I:= 1 to speGrid.Value do begin
-    imgCamCurrent.Canvas.Polyline ([Point (0,I*SizeY),
+    imgCamDifference.Canvas.Polyline ([Point (0,I*SizeY),
                                     Point (320,I*SizeY)]);
-    imgCamCurrent.Canvas.Polyline ([Point (I*SizeX, 0),
+    imgCamDifference.Canvas.Polyline ([Point (I*SizeX, 0),
                                     Point (I*SizeX, 240)]);
   end;
-  for I:= 1 to 16 do begin
-    for J:= 1 to 16 do begin
-      //imgCamCurrent.Canvas.Polyline ([Point ((J-1)*SizeX,(I-1)*SizeY),
-      //                                Point ((J)*SizeX,(I)*SizeY)]);
+  for I:= 1 to 32 do begin
+    for J:= 1 to 32 do begin
+      CurrRefSq.Canvas.CopyRect (Rect (0,0,SizeX,SizeY),
+                                 imgCamCurrent.Canvas,
+                                 Rect ((J-1)*SizeX, (I-1)*SizeY, J*SizeX, I*SizeY));
+      CurrCmpSq.Canvas.CopyRect (Rect (0,0,SizeX,SizeY),
+                                 imgCamReference.Canvas,
+                                 Rect ((J-1)*SizeX, (I-1)*SizeY, J*SizeX, I*SizeY));
+      if CompareSquare (CurrRefSq, CurrCmpSq) = true then begin
+        imgCamDifference.Canvas.Pen.Color:= clLime;
+        imgCamDifference.Canvas.Polyline ([Point ((J-1)*SizeX,(I-1)*SizeY),
+                                        Point ((J)*SizeX,(I)*SizeY)]);
+      end;
     end;
   end;
 end;

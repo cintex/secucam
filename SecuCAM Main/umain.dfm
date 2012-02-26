@@ -3252,13 +3252,13 @@ object frmMain: TfrmMain
     object ToolButton11: TToolButton
       Left = 205
       Top = 0
-      Width = 684
+      Width = 660
       Caption = 'ToolButton11'
       ImageIndex = 8
       Style = tbsSeparator
     end
     object tbtnRunTest: TToolButton
-      Left = 889
+      Left = 865
       Top = 0
       Hint = 'RUN_TEST_SEQ'
       Caption = 'RUN_TST'
@@ -3266,6 +3266,13 @@ object frmMain: TfrmMain
       ParentShowHint = False
       ShowHint = True
       OnClick = tbtnRunTestClick
+    end
+    object ToolButton1: TToolButton
+      Left = 892
+      Top = 0
+      Caption = 'ToolButton1'
+      ImageIndex = 8
+      OnClick = ToolButton1Click
     end
   end
   object sbStatus: TStatusBar
