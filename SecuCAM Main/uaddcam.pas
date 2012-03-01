@@ -16,7 +16,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, ExtCtrls, VFrames;
+  Dialogs, StdCtrls, ComCtrls, ExtCtrls, VFrames, Spin;
 
 type
   TfrmAddCam = class(TForm)
@@ -35,24 +35,36 @@ type
     lblCamName: TLabel;
     gbCamProps: TGroupBox;
     ckbGridOn: TCheckBox;
-    ckbCamActive: TCheckBox;
+    ckbMotActive: TCheckBox;
     dlgColor: TColorDialog;
     ckbHighlightOn: TCheckBox;
     btnGridColor: TButton;
     btnHighlightColor: TButton;
-    imgPreview: TImage;
-    Label6: TLabel;
     Label7: TLabel;
     shGridColor: TShape;
     shHighlightColor: TShape;
+    speRes: TSpinEdit;
+    Label5: TLabel;
+    Label8: TLabel;
+    speInt: TSpinEdit;
+    trbDiff: TTrackBar;
+    trbTol: TTrackBar;
+    lblDiff: TLabel;
+    lblTol: TLabel;
     procedure lbAvailableCamsClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
     procedure btnGridColorClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormHide(Sender: TObject);
     procedure btnHighlightColorClick(Sender: TObject);
+    procedure trbDiffChange(Sender: TObject);
+    procedure trbTolChange(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure btnCancelClick(Sender: TObject);
   private
-    TempCam: TVideoImage;
+    TempCam : TVideoImage;
+    Err     : boolean;
+
+    procedure ClearFields;
   public
     { Public declarations }
   end;
@@ -64,24 +76,36 @@ implementation
 
 {$R *.dfm}
 
+procedure TfrmAddCam.ClearFields;
+begin
+  //lbAvailableCams.ItemIndex:= -1;
+  lblCamName.Caption:= 'Keine';
+  edtAlias.Text:= '';
+  ckbMotActive.Checked:= false;
+  ckbGridOn.Checked:= false;
+  ckbHighlightOn.Checked:= false;
+  speRes.Value:= 4;
+  speInt.Value:= 100;
+  trbDiff.Position:= 1;
+  trbTol.Position:= 1;
+  shGridColor.Brush.Color:= clWhite;
+  shHighlightColor.Brush.Color:= clWhite;
+end;
+
 procedure TfrmAddCam.lbAvailableCamsClick(Sender: TObject);
 begin
   if lbAvailableCams.ItemIndex <> -1 then begin
-    TempCam.VideoStop;
+    ClearFields;
+    //TempCam.VideoStop;
     gbCamProps.Visible:= true;
     lblCamName.Caption:= lbAvailableCams.Items[lbAvailableCams.ItemIndex];
-    TempCam.VideoStart (lblCamName.Caption);
+    //TempCam.VideoStart (lblCamName.Caption);
   end else gbCamProps.Visible:= false;
-end;
-
-procedure TfrmAddCam.FormCreate(Sender: TObject);
-begin
-  imgPreview.Canvas.Rectangle (0,0,imgPreview.ClientWidth,imgPreview.ClientHeight);
-  imgPreview.Canvas.TextOut (5,imgPreview.ClientHeight - 15,'Kein Bild!');
 end;
 
 procedure TfrmAddCam.btnGridColorClick(Sender: TObject);
 begin
+  dlgColor.Color:= shGridColor.Brush.Color;
   if dlgColor.Execute then begin
     shGridColor.Brush.Color:= dlgColor.Color;
   end;
@@ -91,13 +115,16 @@ procedure TfrmAddCam.FormShow(Sender: TObject);
 var TmpStrLst: TStringList;
     I        : integer;
 begin
+  ClearFields;
+  gbCamProps.Visible:= false;
   lbAvailableCams.Clear;
   TmpStrLst:= TStringList.Create;
   TempCam:= TVideoImage.Create;
-  TempCam.SetDisplayCanvas (imgPreview.Canvas);
+  //TempCam.SetDisplayCanvas (imgPreview.Canvas);
   TempCam.GetListOfDevices (TmpStrLst);
   for I:= 0 to TmpStrLst.Count - 1 do
     lbAvailableCams.Items.Add (TmpStrLst[I]);
+  edtAlias.Text:= '';
 end;
 
 procedure TfrmAddCam.FormHide(Sender: TObject);
@@ -108,9 +135,42 @@ end;
 
 procedure TfrmAddCam.btnHighlightColorClick(Sender: TObject);
 begin
+  dlgColor.Color:= shHighlightColor.Brush.Color;
   if dlgColor.Execute then begin
     shHighlightColor.Brush.Color:= dlgColor.Color;
   end;
+end;
+
+procedure TfrmAddCam.trbDiffChange(Sender: TObject);
+begin
+  lblDiff.Caption:= 'Reagiere bei ' + IntToStr (trbDiff.Position) + '% unterschied.';
+end;
+
+procedure TfrmAddCam.trbTolChange(Sender: TObject);
+var PercTol: real;
+begin
+  lblTol.Caption:= 'Toleranz: ' + IntToStr (round ((trbTol.Position / 40)*100)) + '%';
+end;
+
+procedure TfrmAddCam.FormCloseQuery(Sender: TObject;
+  var CanClose: Boolean);
+begin
+  if (lbAvailableCams.ItemIndex = -1) AND (ModalResult = mrOk) then begin
+    CanClose:= true;
+    case MessageDlg ('Sie haben keine Kamera ausgewählt! Möchten Sie wirklich '+
+                     'fortfahren?',
+                     mtWarning,
+                     [mbYes,mbNo],
+                     0) of
+      mrYes : ModalResult:= mrCancel;
+      mrNo  : CanClose:= false;
+    end;
+  end;
+end;
+
+procedure TfrmAddCam.btnCancelClick(Sender: TObject);
+begin
+  Err:= false;
 end;
 
 end.

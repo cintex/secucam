@@ -10,7 +10,9 @@ uses
   ucamdb in 'ucamdb.pas',
   ucam in 'ucam.pas',
   ucam_v2 in 'ucam_v2.pas',
-  ucamcomparator_v2 in 'ucamcomparator_v2.pas';
+  ucamcomparator_v2 in 'ucamcomparator_v2.pas',
+  ueditcam in 'ueditcam.pas' {frmEditCam},
+  ucamdb_v2 in 'ucamdb_v2.pas';
 
 {$R *.res}
 
@@ -21,5 +23,6 @@ begin
   Application.CreateForm(TfrmSplash, frmSplash);
   Application.CreateForm(TfrmAbout, frmAbout);
   Application.CreateForm(TfrmAddCam, frmAddCam);
+  Application.CreateForm(TfrmEditCam, frmEditCam);
   Application.Run;
 end.

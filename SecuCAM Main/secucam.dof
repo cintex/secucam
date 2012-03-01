@@ -94,10 +94,10 @@ OutputDir=
 UnitOutputDir=
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=C:\Documents and Settings\anormal\My Documents\T3IF\Projet\SecuCAM PROJECT\SecuCAM Main\DirectX;C:\Documents and Settings\anormal\My Documents\T3IF\Projet\SecuCAM PROJECT\SecuCAM Main\CoolTrayIcon
+SearchPath=C:\Documents and Settings\anormal\My Documents\T3IF\Projet\SecuCAM PROJECT\SecuCAM Main\DirectX;C:\Documents and Settings\anormal\My Documents\T3IF\Projet\SecuCAM PROJECT\SecuCAM Main\CoolTrayIcon;C:\Documents and Settings\anormal\My Documents\T3IF\Projet\SecuCAM PROJECT\SecuCAM Main
 Packages=vcl;rtl;vclx;indy;inet;xmlrtl;vclie;inetdbbde;inetdbxpress;dbrtl;dsnap;dsnapcon;vcldb;soaprtl;VclSmp;dbexpress;dbxcds;inetdb;bdertl;vcldbx;webdsnap;websnap;adortl;ibxpress;teeui;teedb;tee;dss;visualclx;visualdbclx;vclactnband;vclshlctrls;IntrawebDB_50_70;Intraweb_50_70;Rave50CLX;Rave50VCL;dclOfficeXP;DSPack_D7;DirectX9_D7
 Conditionals=
-DebugSourceDirs=
+DebugSourceDirs=C:\Documents and Settings\anormal\My Documents\T3IF\Projet\SecuCAM PROJECT\SecuCAM Main\
 UsePackages=0
 [Parameters]
 RunParams=
@@ -112,10 +112,10 @@ RootDir=
 [Version Info]
 IncludeVerInfo=1
 AutoIncBuild=1
-MajorVer=0
-MinorVer=5
+MajorVer=1
+MinorVer=0
 Release=1
-Build=4
+Build=5
 Debug=1
 PreRelease=1
 Special=0
@@ -126,18 +126,22 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=PWarnimo Software Development
 FileDescription=A program that allows a user to use any IP or USB Cam for video surveillance.
-FileVersion=0.5.1.4
+FileVersion=1.0.1.5
 InternalName=secucam_cst
 LegalCopyright=
 LegalTrademarks=
 OriginalFilename=
 ProductName=SecuCAM Camera Surveillance Tool
-ProductVersion=0.5.1 BETA
+ProductVersion=1.0
 Comments=
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=C:\Documents and Settings\anormal\My Documents\T3IF\Projet\SecuCAM PROJECT\SecuCAM Main\
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
-Count=2
-Item0=C:\Documents and Settings\anormal\My Documents\T3IF\Projet\SecuCAM PROJECT\SecuCAM Main\DirectX;C:\Documents and Settings\anormal\My Documents\T3IF\Projet\SecuCAM PROJECT\SecuCAM Main\CoolTrayIcon
-Item1=C:\Documents and Settings\anormal\My Documents\T3IF\Projet\SecuCAM PROJECT\SecuCAM Main\DirectX
+Count=3
+Item0=C:\Documents and Settings\anormal\My Documents\T3IF\Projet\SecuCAM PROJECT\SecuCAM Main\DirectX;C:\Documents and Settings\anormal\My Documents\T3IF\Projet\SecuCAM PROJECT\SecuCAM Main\CoolTrayIcon;C:\Documents and Settings\anormal\My Documents\T3IF\Projet\SecuCAM PROJECT\SecuCAM Main
+Item1=C:\Documents and Settings\anormal\My Documents\T3IF\Projet\SecuCAM PROJECT\SecuCAM Main\DirectX;C:\Documents and Settings\anormal\My Documents\T3IF\Projet\SecuCAM PROJECT\SecuCAM Main\CoolTrayIcon
+Item2=C:\Documents and Settings\anormal\My Documents\T3IF\Projet\SecuCAM PROJECT\SecuCAM Main\DirectX
