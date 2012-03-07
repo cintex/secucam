@@ -480,7 +480,7 @@ begin
       MessageDlg ('Bitte füllen Sie alle Felder aus',
                   mtInformation,
                   [mbOk],
-                  0);
+                  0);         /*
     end;
   end;
   if (Err = false) AND (lbCamList.Items.Count <> 0) then begin

@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 352
-  Top = 133
+  Left = 528
+  Top = 180
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'SecuCAM CST 1.0'

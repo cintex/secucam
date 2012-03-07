@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 528
-  Top = 180
+  Left = 258
+  Top = 133
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'SecuCAM CST 1.0'
@@ -3240,7 +3240,7 @@ object frmMain: TfrmMain
     Top = 29
     Width = 719
     Height = 543
-    ActivePage = tbsIntro
+    ActivePage = tbsExtended
     Align = alClient
     TabOrder = 3
     object tbsIntro: TTabSheet
